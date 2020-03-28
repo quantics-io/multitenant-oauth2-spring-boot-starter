@@ -12,7 +12,7 @@
     <artifactId>spring-multi-tenant</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Spring Multi-Tenancy</name>
-    <description>Multi-tenant capabilities for spring-based applications</description>
+    <description>Multi-tenant capabilities for spring-based OAuth2 resource servers</description>
 
     <properties>
         <java.version>11</java.version>
