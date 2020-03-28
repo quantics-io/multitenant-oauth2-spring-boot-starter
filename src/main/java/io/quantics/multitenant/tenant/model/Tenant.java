@@ -1,6 +1,7 @@
 package io.quantics.multitenant.tenant.model;
 
 import io.quantics.multitenant.config.db.TenantSchemaResolver;
+import io.quantics.multitenant.util.UrlUtils;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -29,4 +30,9 @@ public class Tenant {
     @NotNull
     @Column(name = "issuer", nullable = false)
     private String issuer;
+
+
+    public String getJwkSetUrl() {
+        return UrlUtils.removeTrailingSlash(this.issuer) + "/protocol/openid-connect/certs";
+    }
 }
