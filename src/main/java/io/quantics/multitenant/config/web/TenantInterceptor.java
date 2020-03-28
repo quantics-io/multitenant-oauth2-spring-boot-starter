@@ -33,9 +33,7 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
-        if (TenantContext.getTenantId() != null) {
-            log.debug("Clear TenantContext: {}", TenantContext.getTenantId());
-            TenantContext.clear();
-        }
+        log.debug("Clear TenantContext: {}", TenantContext.getTenantId());
+        TenantContext.clear();
     }
 }
