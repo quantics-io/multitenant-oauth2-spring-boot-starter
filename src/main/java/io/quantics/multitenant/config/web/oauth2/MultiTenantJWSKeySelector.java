@@ -10,6 +10,7 @@ import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import io.quantics.multitenant.tenant.model.Tenant;
 import io.quantics.multitenant.tenant.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@ConditionalOnBean(name = "multiTenantJwtProcessor")
 public class MultiTenantJWSKeySelector implements JWTClaimsSetAwareJWSKeySelector<SecurityContext> {
 
     private final TenantService tenantService;

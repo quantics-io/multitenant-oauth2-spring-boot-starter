@@ -3,6 +3,7 @@ package io.quantics.multitenant.config.web.oauth2;
 import io.quantics.multitenant.tenant.model.Tenant;
 import io.quantics.multitenant.tenant.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@ConditionalOnBean(name = "multiTenantJwtDecoder")
 public class MultiTenantJwtIssuerValidator implements OAuth2TokenValidator<Jwt> {
 
     private final TenantService tenantService;

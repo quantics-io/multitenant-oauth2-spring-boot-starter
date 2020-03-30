@@ -25,4 +25,3 @@ public class TenantService {
         return repository.findByIssuer(issuer);
     }
 }
-
