@@ -21,9 +21,6 @@ public class MultiTenantResourceServerProperties {
                 throw new IllegalStateException("One of use-header and use-token should be configured");
             }
         }
-        if (!enabled && (useHeader || useToken)) {
-            throw new IllegalStateException("Set multitenant=true to activate multi-tenant support");
-        }
     }
 
     public boolean isEnabled() {

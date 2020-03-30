@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,6 +51,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
+@EnableConfigurationProperties(MultiTenantResourceServerProperties.class)
 public class MultiTenantResourceServerJwtConfiguration {
 
     @Configuration
@@ -62,7 +64,8 @@ public class MultiTenantResourceServerJwtConfiguration {
         JWTClaimsSetAwareJWSKeySelector<SecurityContext> multiTenantJWSKeySelector() {
             return new JWTClaimsSetAwareJWSKeySelector<>() {
 
-                private @Autowired TenantService tenantService;
+                @Autowired
+                private TenantService tenantService;
                 private final Map<String, JWSKeySelector<SecurityContext>> selectors = new ConcurrentHashMap<>();
 
                 @Override
@@ -98,7 +101,8 @@ public class MultiTenantResourceServerJwtConfiguration {
         OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator() {
             return new OAuth2TokenValidator<>() {
 
-                private @Autowired TenantService tenantService;
+                @Autowired
+                private TenantService tenantService;
                 private final Map<String, JwtIssuerValidator> validators = new ConcurrentHashMap<>();
 
                 @Override
@@ -132,7 +136,7 @@ public class MultiTenantResourceServerJwtConfiguration {
         @Bean
         @ConditionalOnMissingBean(JwtDecoder.class)
         JwtDecoder multiTenantJwtDecoder(JWTProcessor<SecurityContext> multiTenantJwtProcessor,
-                                                OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator) {
+                                         OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator) {
             NimbusJwtDecoder decoder = new NimbusJwtDecoder(multiTenantJwtProcessor);
             decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
                     multiTenantJwtIssuerValidator));
@@ -152,8 +156,10 @@ public class MultiTenantResourceServerJwtConfiguration {
 
                 private final BearerTokenResolver resolver = new DefaultBearerTokenResolver();
                 private final Map<String, AuthenticationManager> authenticationManagers = new ConcurrentHashMap<>();
-                private @Autowired TenantService tenantService;
-                private @Autowired JwtDecoder multiTenantJwtDecoder;
+                @Autowired
+                private TenantService tenantService;
+                @Autowired
+                private JwtDecoder multiTenantJwtDecoder;
 
                 @Override
                 public AuthenticationManager resolve(HttpServletRequest request) {
@@ -196,7 +202,8 @@ public class MultiTenantResourceServerJwtConfiguration {
         WebSecurityConfigurerAdapter multiTenantWebSecurityConfigurerAdapter() {
             return new WebSecurityConfigurerAdapter() {
 
-                private @Autowired AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver;
+                @Autowired
+                private AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver;
 
                 @Override
                 protected void configure(HttpSecurity http) throws Exception {
@@ -216,8 +223,10 @@ public class MultiTenantResourceServerJwtConfiguration {
     static class MultiTenantWebMvcConfiguration {
 
         @Bean
-        @ConditionalOnProperty(value = "spring.security.oauth2.resourceserver.multitenant.use-header",
-                havingValue = "true")
+        @ConditionalOnProperty(value = {
+                "spring.security.oauth2.resourceserver.multitenant.enabled",
+                "spring.security.oauth2.resourceserver.multitenant.use-header"
+        }, havingValue = "true")
         HandlerInterceptorAdapter multiTenantHeaderInterceptor() {
             return new HandlerInterceptorAdapter() {
 
@@ -240,12 +249,15 @@ public class MultiTenantResourceServerJwtConfiguration {
         }
 
         @Bean
-        @ConditionalOnProperty(value = "spring.security.oauth2.resourceserver.multitenant.use-token",
-                havingValue = "true")
+        @ConditionalOnProperty(value = {
+                "spring.security.oauth2.resourceserver.multitenant.enabled",
+                "spring.security.oauth2.resourceserver.multitenant.use-token"
+        }, havingValue = "true")
         HandlerInterceptorAdapter multiTenantJwtInterceptor() {
             return new HandlerInterceptorAdapter() {
 
-                private @Autowired TenantService tenantService;
+                @Autowired
+                private TenantService tenantService;
 
                 @Override
                 @SuppressWarnings("rawtypes")
@@ -278,7 +290,8 @@ public class MultiTenantResourceServerJwtConfiguration {
         WebMvcConfigurer multiTenantWebMvcConfigurer() {
             return new WebMvcConfigurer() {
 
-                private @Autowired HandlerInterceptorAdapter interceptor;
+                @Autowired
+                private HandlerInterceptorAdapter interceptor;
 
                 @Override
                 public void addInterceptors(InterceptorRegistry registry) {

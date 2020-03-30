@@ -23,10 +23,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest({
+        "spring.security.oauth2.resourceserver.multitenant.enabled=true",
+        "spring.security.oauth2.resourceserver.multitenant.use-token=true",
+        "spring.security.oauth2.resourceserver.multitenant.use-header=false",
+})
 @AutoConfigureMockMvc
 @WithMockUser(username = "test")
-class MultiTenantApplicationTests {
+class MultiTenantJwtApplicationTests {
 
     @Autowired
     private HomeController controller;
