@@ -114,7 +114,7 @@ public class MultiTenantResourceServerJwtConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(JWTProcessor.class)
-        public JWTProcessor<SecurityContext> multiTenantJwtProcessor(
+        JWTProcessor<SecurityContext> multiTenantJwtProcessor(
                 JWTClaimsSetAwareJWSKeySelector<SecurityContext> multiTenantJWSKeySelector) {
             ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
             jwtProcessor.setJWTClaimsSetAwareJWSKeySelector(multiTenantJWSKeySelector);
@@ -123,7 +123,7 @@ public class MultiTenantResourceServerJwtConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(JwtDecoder.class)
-        public JwtDecoder multiTenantJwtDecoder(JWTProcessor<SecurityContext> multiTenantJwtProcessor,
+        JwtDecoder multiTenantJwtDecoder(JWTProcessor<SecurityContext> multiTenantJwtProcessor,
                                                 OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator) {
             NimbusJwtDecoder decoder = new NimbusJwtDecoder(multiTenantJwtProcessor);
             decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
@@ -139,7 +139,7 @@ public class MultiTenantResourceServerJwtConfiguration {
 
         @Bean
         @ConditionalOnBean(JwtDecoder.class)
-        public AuthenticationManagerResolver<HttpServletRequest> multiTenantAuthenticationManagerResolver() {
+        AuthenticationManagerResolver<HttpServletRequest> multiTenantAuthenticationManagerResolver() {
             return new AuthenticationManagerResolver<>() {
 
                 private final BearerTokenResolver resolver = new DefaultBearerTokenResolver();

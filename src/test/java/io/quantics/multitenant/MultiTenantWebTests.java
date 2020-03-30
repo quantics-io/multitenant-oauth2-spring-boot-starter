@@ -15,14 +15,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(HomeController.class)
 @WithMockUser(username = "test")
-public class WebTests {
+public class MultiTenantWebTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     public void shouldReturnHelloWorld() throws Exception {
-        this.mockMvc.perform(get("/"))
+        mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Hello World!")));
