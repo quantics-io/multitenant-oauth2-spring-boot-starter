@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.web.oauth2;
+package io.quantics.multitenant.config.oauth2;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;

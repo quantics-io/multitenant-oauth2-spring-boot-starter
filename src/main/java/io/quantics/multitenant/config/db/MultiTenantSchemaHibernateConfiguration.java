@@ -18,12 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class HibernateConfig {
+public class MultiTenantSchemaHibernateConfiguration {
 
     private final JpaProperties jpaProperties;
 
     @Autowired
-    public HibernateConfig(JpaProperties jpaProperties) {
+    public MultiTenantSchemaHibernateConfiguration(JpaProperties jpaProperties) {
         this.jpaProperties = jpaProperties;
     }
 

@@ -11,12 +11,12 @@ import java.sql.SQLException;
 
 @Component
 @Slf4j
-public class TenantConnectionProvider implements MultiTenantConnectionProvider {
+public class MultiTenantSchemaConnectionProvider implements MultiTenantConnectionProvider {
 
     private final DataSource datasource;
 
     @Autowired
-    public TenantConnectionProvider(DataSource dataSource) {
+    public MultiTenantSchemaConnectionProvider(DataSource dataSource) {
         this.datasource = dataSource;
     }
 
@@ -41,7 +41,7 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
     @Override
     public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
         log.trace("Release connection for tenant '{}'", tenantIdentifier);
-        connection.setSchema(TenantSchemaResolver.DEFAULT_SCHEMA);
+        connection.setSchema(CurrentTenantResolver.DEFAULT_SCHEMA);
         releaseAnyConnection(connection);
     }
 

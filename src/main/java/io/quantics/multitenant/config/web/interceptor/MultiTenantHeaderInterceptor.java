@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.web;
+package io.quantics.multitenant.config.web.interceptor;
 
 import io.quantics.multitenant.util.TenantContext;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 @Slf4j
-public class TenantInterceptor extends HandlerInterceptorAdapter {
+public class MultiTenantHeaderInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

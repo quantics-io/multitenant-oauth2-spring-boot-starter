@@ -1,13 +1,16 @@
-package io.quantics.multitenant.config.web.oauth2;
+package io.quantics.multitenant.config.oauth2;
 
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.KeySourceException;
+import com.nimbusds.jose.proc.JWSAlgorithmFamilyJWSKeySelector;
+import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
-import io.quantics.multitenant.config.web.oauth2.KeycloakRealmAuthoritiesConverter;
-import io.quantics.multitenant.config.web.oauth2.MultiTenantJWSKeySelector;
-import io.quantics.multitenant.config.web.oauth2.MultiTenantJwtIssuerValidator;
 import io.quantics.multitenant.tenant.model.Tenant;
 import io.quantics.multitenant.tenant.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +24,18 @@ import org.springframework.security.authentication.AuthenticationManagerResolver
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtValidators;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
+import java.security.Key;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,24 +48,90 @@ public class MultiTenantResourceServerJwtConfiguration {
     static class JwtConfiguration {
 
         @Bean
+        @ConditionalOnMissingBean(JWTClaimsSetAwareJWSKeySelector.class)
+        JWTClaimsSetAwareJWSKeySelector<SecurityContext> multiTenantJWSKeySelector() {
+            return new JWTClaimsSetAwareJWSKeySelector<>() {
+
+                @Autowired
+                private TenantService tenantService;
+                private final Map<String, JWSKeySelector<SecurityContext>> selectors = new ConcurrentHashMap<>();
+
+                @Override
+                public List<? extends Key> selectKeys(JWSHeader jwsHeader, JWTClaimsSet jwtClaimsSet,
+                                                      SecurityContext securityContext) throws KeySourceException {
+                    return this.selectors.computeIfAbsent(toTenant(jwtClaimsSet), this::fromTenant)
+                            .selectJWSKeys(jwsHeader, securityContext);
+                }
+
+                private String toTenant(JWTClaimsSet claimSet) {
+                    return claimSet.getIssuer();
+                }
+
+                private JWSKeySelector<SecurityContext> fromTenant(String tenant) {
+                    return this.tenantService.getByIssuer(tenant)
+                            .map(Tenant::getJwkSetUrl)
+                            .map(this::fromUri)
+                            .orElseThrow(() -> new IllegalArgumentException("Unknown tenant"));
+                }
+
+                private JWSKeySelector<SecurityContext> fromUri(String uri) {
+                    try {
+                        return JWSAlgorithmFamilyJWSKeySelector.fromJWKSetURL(new URL(uri));
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                }
+            };
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(OAuth2TokenValidator.class)
+        OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator() {
+            return new OAuth2TokenValidator<>() {
+
+                @Autowired
+                private TenantService tenantService;
+                private final Map<String, JwtIssuerValidator> validators = new ConcurrentHashMap<>();
+
+                @Override
+                public OAuth2TokenValidatorResult validate(Jwt token) {
+                    return this.validators.computeIfAbsent(toTenant(token), this::fromTenant)
+                            .validate(token);
+                }
+
+                private String toTenant(Jwt jwt) {
+                    return jwt.getIssuer().toString();
+                }
+
+                private JwtIssuerValidator fromTenant(String tenant) {
+                    return this.tenantService.getByIssuer(tenant)
+                            .map(Tenant::getIssuer)
+                            .map(JwtIssuerValidator::new)
+                            .orElseThrow(() -> new IllegalArgumentException("unknown tenant"));
+                }
+            };
+        }
+
+        @Bean
         @ConditionalOnMissingBean(JWTProcessor.class)
-        public JWTProcessor<SecurityContext> multiTenantJwtProcessor(MultiTenantJWSKeySelector keySelector) {
+        public JWTProcessor<SecurityContext> multiTenantJwtProcessor(
+                JWTClaimsSetAwareJWSKeySelector<SecurityContext> multiTenantJWSKeySelector) {
             ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
-            jwtProcessor.setJWTClaimsSetAwareJWSKeySelector(keySelector);
+            jwtProcessor.setJWTClaimsSetAwareJWSKeySelector(multiTenantJWSKeySelector);
             return jwtProcessor;
         }
 
         @Bean
         @ConditionalOnMissingBean(JwtDecoder.class)
         public JwtDecoder multiTenantJwtDecoder(JWTProcessor<SecurityContext> multiTenantJwtProcessor,
-                                                MultiTenantJwtIssuerValidator jwtValidator) {
+                                                OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator) {
             NimbusJwtDecoder decoder = new NimbusJwtDecoder(multiTenantJwtProcessor);
-            decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(), jwtValidator));
+            decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
+                    multiTenantJwtIssuerValidator));
             return decoder;
         }
 
     }
-
 
     @Configuration
     @ConditionalOnMissingBean(AuthenticationManagerResolver.class)
@@ -109,7 +181,6 @@ public class MultiTenantResourceServerJwtConfiguration {
 
     }
 
-
     @Configuration
     @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
     static class MultiTenantWebSecurityConfigurerAdapter {
@@ -129,7 +200,6 @@ public class MultiTenantResourceServerJwtConfiguration {
                     http.oauth2ResourceServer(resourceServer -> resourceServer
                             .authenticationManagerResolver(this.authenticationManagerResolver));
                 }
-
             };
         }
 
