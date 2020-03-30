@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -44,7 +45,9 @@ class MultiTenantApplicationTests {
         assertThat(context.getBean(JWTProcessor.class)).isNotNull();
         assertThat(context.getBean(JwtDecoder.class)).isNotNull();
         assertThat(context.getBean(AuthenticationManagerResolver.class)).isNotNull();
-        assertThat(context.getBean(WebSecurityConfigurerAdapter.class)).isNotNull();
+        assertThat(context.getBean("multiTenantWebSecurityConfigurerAdapter", WebSecurityConfigurerAdapter.class))
+                .isNotNull();
+        assertThat(context.getBean("multiTenantWebMvcConfigurer", WebMvcConfigurer.class)).isNotNull();
     }
 
     @Test
