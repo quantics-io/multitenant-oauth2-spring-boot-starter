@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.stereotype.Service;
@@ -40,12 +39,11 @@ public class TenantService {
         return repository.findByIssuer(issuer);
     }
 
-    public AuthenticationManager getAuthenticationManager(String issuer) {
-        return authenticationManagers.computeIfAbsent(issuer, this::fromTenant);
+    public AuthenticationManager getAuthenticationManager(String issuer, JwtDecoder jwtDecoder) {
+        return authenticationManagers.computeIfAbsent(issuer, iss -> fromTenant(jwtDecoder));
     }
 
-    private AuthenticationManager fromTenant(String issuer) {
-        JwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(issuer);
+    private AuthenticationManager fromTenant(JwtDecoder jwtDecoder) {
         JwtAuthenticationProvider authenticationProvider = new JwtAuthenticationProvider(jwtDecoder);
         JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
         authenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

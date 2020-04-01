@@ -47,12 +47,6 @@ public class MultiTenantResourceServerJwtConfiguration {
     static class JwtConfiguration {
 
         @Bean
-        @ConditionalOnMissingBean(AuthenticationManagerResolver.class)
-        AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver(TenantService tenantService) {
-            return new JwtIssuerAuthenticationManagerResolver(tenantService::getAuthenticationManager);
-        }
-
-        @Bean
         @ConditionalOnMissingBean(JWTClaimsSetAwareJWSKeySelector.class)
         JWTClaimsSetAwareJWSKeySelector<SecurityContext> multiTenantJWSKeySelector(TenantService tenantService) {
             return new MultiTenantJWSKeySelector(iss -> tenantService.getByIssuer(iss).map(Tenant::getJwkSetUrl));
@@ -81,6 +75,14 @@ public class MultiTenantResourceServerJwtConfiguration {
             decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
                     multiTenantJwtIssuerValidator));
             return decoder;
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(AuthenticationManagerResolver.class)
+        AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver(
+                TenantService tenantService, JwtDecoder multiTenantJwtDecoder) {
+            return new JwtIssuerAuthenticationManagerResolver(
+                    iss -> tenantService.getAuthenticationManager(iss, multiTenantJwtDecoder));
         }
 
     }
