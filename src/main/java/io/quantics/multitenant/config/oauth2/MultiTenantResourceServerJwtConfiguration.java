@@ -99,10 +99,8 @@ public class MultiTenantResourceServerJwtConfiguration {
     static class MultiTenantWebMvcConfiguration {
 
         @Bean
-        @ConditionalOnProperty(value = {
-                "spring.security.oauth2.resourceserver.multitenant.enabled",
-                "spring.security.oauth2.resourceserver.multitenant.use-header"
-        }, havingValue = "true")
+        @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant",
+                name = {"enabled", "use-header"}, havingValue = "true")
         HandlerInterceptorAdapter multiTenantHeaderInterceptor() {
             return new HandlerInterceptorAdapter() {
 
@@ -125,10 +123,8 @@ public class MultiTenantResourceServerJwtConfiguration {
         }
 
         @Bean
-        @ConditionalOnProperty(value = {
-                "spring.security.oauth2.resourceserver.multitenant.enabled",
-                "spring.security.oauth2.resourceserver.multitenant.use-token"
-        }, havingValue = "true")
+        @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant",
+                name = {"enabled", "use-token"}, havingValue = "true")
         HandlerInterceptorAdapter multiTenantJwtInterceptor() {
             return new HandlerInterceptorAdapter() {
 

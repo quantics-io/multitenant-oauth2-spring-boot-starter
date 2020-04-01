@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class KeycloakRealmAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
+public final class KeycloakRealmAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
     @Override
     @SuppressWarnings("unchecked")
