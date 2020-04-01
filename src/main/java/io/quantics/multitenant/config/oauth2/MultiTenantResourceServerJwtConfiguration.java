@@ -16,7 +16,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -28,7 +27,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
-import org.springframework.security.oauth2.server.resource.authentication.JwtIssuerAuthenticationManagerResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -78,33 +76,17 @@ public class MultiTenantResourceServerJwtConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean(AuthenticationManagerResolver.class)
-        AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver(
-                TenantService tenantService, JwtDecoder multiTenantJwtDecoder) {
-            return new JwtIssuerAuthenticationManagerResolver(
-                    iss -> tenantService.getAuthenticationManager(iss, multiTenantJwtDecoder));
-        }
-
-    }
-
-    @Configuration
-    @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
-    static class MultiTenantWebSecurityConfigurerAdapter {
-
-        @Bean
-        @ConditionalOnBean(AuthenticationManagerResolver.class)
-        WebSecurityConfigurerAdapter multiTenantWebSecurityConfigurerAdapter() {
+        @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
+        WebSecurityConfigurerAdapter multiTenantWebSecurityConfigurerAdapter(JwtDecoder multiTenantJwtDecoder) {
             return new WebSecurityConfigurerAdapter() {
-
-                @Autowired
-                private AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver;
 
                 @Override
                 protected void configure(HttpSecurity http) throws Exception {
                     http.authorizeRequests(authorize -> authorize
                             .anyRequest().authenticated());
                     http.oauth2ResourceServer(oauth2 -> oauth2
-                            .authenticationManagerResolver(this.authenticationManagerResolver));
+                            .jwt(jwt -> jwt
+                                    .decoder(multiTenantJwtDecoder)));
                 }
             };
         }

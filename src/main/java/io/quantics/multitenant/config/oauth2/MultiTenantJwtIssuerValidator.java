@@ -12,11 +12,11 @@ import java.util.function.Function;
 
 public class MultiTenantJwtIssuerValidator implements OAuth2TokenValidator<Jwt> {
 
-    private final Function<String, Optional<String>> issuerToIssuer;
+    private final Function<String, Optional<String>> jwtIssuerToTenantIssuer;
     private final Map<String, JwtIssuerValidator> validators = new ConcurrentHashMap<>();
 
-    public MultiTenantJwtIssuerValidator(Function<String, Optional<String>> issuerToIssuer) {
-        this.issuerToIssuer = issuerToIssuer;
+    public MultiTenantJwtIssuerValidator(Function<String, Optional<String>> jwtIssuerToTenantIssuer) {
+        this.jwtIssuerToTenantIssuer = jwtIssuerToTenantIssuer;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class MultiTenantJwtIssuerValidator implements OAuth2TokenValidator<Jwt> 
     }
 
     private JwtIssuerValidator fromTenant(String issuer) {
-        return this.issuerToIssuer.apply(issuer)
+        return this.jwtIssuerToTenantIssuer.apply(issuer)
                 .map(JwtIssuerValidator::new)
                 .orElseThrow(() -> new IllegalArgumentException("unknown tenant"));
     }
