@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @Entity
 @Table(name = "tenant", schema = CurrentTenantResolver.DEFAULT_SCHEMA)
-public class Tenant {
+public class Tenant implements TenantDetails {
 
     @Id
     @Column(name = "id", updatable = false)
@@ -32,6 +32,7 @@ public class Tenant {
     private String issuer;
 
 
+    @Override
     public String getJwkSetUrl() {
         return UrlUtils.removeTrailingSlash(this.issuer) + "/protocol/openid-connect/certs";
     }

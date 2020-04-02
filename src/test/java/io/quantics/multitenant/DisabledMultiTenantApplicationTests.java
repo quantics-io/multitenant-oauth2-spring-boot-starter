@@ -50,7 +50,7 @@ class DisabledMultiTenantApplicationTests {
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(OAuth2TokenValidator.class));
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JwtDecoder.class));
         assertThrows(NoSuchBeanDefinitionException.class,
-                () -> context.getBean("multiTenantJwtGrantedAuthoritiesConverterWebSecurity", WebSecurityConfigurerAdapter.class));
+                () -> context.getBean("multiTenantJwtAuthenticationConverterWebSecurity", WebSecurityConfigurerAdapter.class));
         assertThrows(NoSuchBeanDefinitionException.class,
                 () -> context.getBean("multiTenantJwtDecoderWebSecurity", WebSecurityConfigurerAdapter.class));
         assertThrows(NoSuchBeanDefinitionException.class,

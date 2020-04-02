@@ -17,7 +17,7 @@ public class MultiTenantResourceServerWebSecurityConfiguration {
 
     @Bean
     @Conditional(JwtConverterCondition.class)
-    WebSecurityConfigurerAdapter multiTenantJwtGrantedAuthoritiesConverterWebSecurity(
+    WebSecurityConfigurerAdapter multiTenantJwtAuthenticationConverterWebSecurity(
             MultiTenantResourceServerProperties properties) {
         return new WebSecurityConfigurerAdapter() {
 

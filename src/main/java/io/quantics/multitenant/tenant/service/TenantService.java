@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class TenantService {
+public class TenantService implements TenantDetailsService {
 
     private final TenantRepository repository;
 
@@ -21,6 +21,7 @@ public class TenantService {
         return repository.findAll();
     }
 
+    @Override
     public Optional<Tenant> getByIssuer(String issuer) {
         return repository.findByIssuer(issuer);
     }

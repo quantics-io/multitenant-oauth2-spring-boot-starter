@@ -5,8 +5,8 @@ import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
-import io.quantics.multitenant.tenant.model.Tenant;
-import io.quantics.multitenant.tenant.service.TenantService;
+import io.quantics.multitenant.tenant.model.TenantDetails;
+import io.quantics.multitenant.tenant.service.TenantDetailsService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,8 +27,8 @@ public class MultiTenantResourceServerJwtConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(JWTClaimsSetAwareJWSKeySelector.class)
-    JWTClaimsSetAwareJWSKeySelector<SecurityContext> multiTenantJWSKeySelector(TenantService tenantService) {
-        return new MultiTenantJWSKeySelector(iss -> tenantService.getByIssuer(iss).map(Tenant::getJwkSetUrl));
+    JWTClaimsSetAwareJWSKeySelector<SecurityContext> multiTenantJWSKeySelector(TenantDetailsService tenantService) {
+        return new MultiTenantJWSKeySelector(iss -> tenantService.getByIssuer(iss).map(TenantDetails::getJwkSetUrl));
     }
 
     @Bean
@@ -42,8 +42,8 @@ public class MultiTenantResourceServerJwtConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(OAuth2TokenValidator.class)
-    OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator(TenantService tenantService) {
-        return new MultiTenantJwtIssuerValidator(iss -> tenantService.getByIssuer(iss).map(Tenant::getIssuer));
+    OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator(TenantDetailsService tenantService) {
+        return new MultiTenantJwtIssuerValidator(iss -> tenantService.getByIssuer(iss).map(TenantDetails::getIssuer));
     }
 
     @Bean
