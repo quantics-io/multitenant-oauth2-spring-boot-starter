@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -45,11 +44,10 @@ class MultiTenantHeaderApplicationTests {
     void contextLoads() {
         assertThat(controller).isNotNull();
         assertThat(context.getBean(JWTClaimsSetAwareJWSKeySelector.class)).isNotNull();
-        assertThat(context.getBean(OAuth2TokenValidator.class)).isNotNull();
         assertThat(context.getBean(JWTProcessor.class)).isNotNull();
+        assertThat(context.getBean(OAuth2TokenValidator.class)).isNotNull();
         assertThat(context.getBean(JwtDecoder.class)).isNotNull();
-        assertThat(context.getBean(AuthenticationManagerResolver.class)).isNotNull();
-        assertThat(context.getBean("multiTenantWebSecurityConfigurerAdapter", WebSecurityConfigurerAdapter.class))
+        assertThat(context.getBean("multiTenantJwtDecoderWebSecurity", WebSecurityConfigurerAdapter.class))
                 .isNotNull();
         assertThat(context.getBean("multiTenantWebMvcConfigurer", WebMvcConfigurer.class)).isNotNull();
     }
@@ -59,7 +57,7 @@ class MultiTenantHeaderApplicationTests {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Hello World!")));
+                .andExpect(content().string(containsString("Hello World")));
     }
 
 }

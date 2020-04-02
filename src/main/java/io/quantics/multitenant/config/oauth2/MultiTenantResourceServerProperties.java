@@ -10,9 +10,10 @@ public class MultiTenantResourceServerProperties {
     private boolean enabled = false;
     private boolean useHeader = false;
     private boolean useToken = false;
+    private String authoritiesConverter;
 
     @PostConstruct
-    void validate() {
+    void validate() throws ClassNotFoundException {
         if (enabled) {
             if (useHeader && useToken) {
                 throw new IllegalStateException("Only one of use-header and use-token should be configured");
@@ -20,6 +21,11 @@ public class MultiTenantResourceServerProperties {
             if (!useHeader && !useToken) {
                 throw new IllegalStateException("One of use-header and use-token should be configured");
             }
+        }
+        if (authoritiesConverter != null
+                && !AbstractJwtGrantedAuthoritiesConverter.class.isAssignableFrom(Class.forName(authoritiesConverter))) {
+            throw new IllegalStateException("converter must implement "
+                    + AbstractJwtGrantedAuthoritiesConverter.class.getName());
         }
     }
 
@@ -45,5 +51,13 @@ public class MultiTenantResourceServerProperties {
 
     public void setUseToken(boolean useToken) {
         this.useToken = useToken;
+    }
+
+    public String getAuthoritiesConverter() {
+        return authoritiesConverter;
+    }
+
+    public void setAuthoritiesConverter(String authoritiesConverter) {
+        this.authoritiesConverter = authoritiesConverter;
     }
 }

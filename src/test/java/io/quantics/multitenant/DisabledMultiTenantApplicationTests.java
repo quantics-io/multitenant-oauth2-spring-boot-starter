@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -47,12 +46,13 @@ class DisabledMultiTenantApplicationTests {
     void contextLoads() {
         assertThat(controller).isNotNull();
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JWTClaimsSetAwareJWSKeySelector.class));
-        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(OAuth2TokenValidator.class));
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JWTProcessor.class));
+        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(OAuth2TokenValidator.class));
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JwtDecoder.class));
-        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(AuthenticationManagerResolver.class));
         assertThrows(NoSuchBeanDefinitionException.class,
-                () -> context.getBean("multiTenantWebSecurityConfigurerAdapter", WebSecurityConfigurerAdapter.class));
+                () -> context.getBean("multiTenantJwtGrantedAuthoritiesConverterWebSecurity", WebSecurityConfigurerAdapter.class));
+        assertThrows(NoSuchBeanDefinitionException.class,
+                () -> context.getBean("multiTenantJwtDecoderWebSecurity", WebSecurityConfigurerAdapter.class));
         assertThrows(NoSuchBeanDefinitionException.class,
                 () -> context.getBean("multiTenantWebMvcConfigurer", WebMvcConfigurer.class));
     }
@@ -62,7 +62,7 @@ class DisabledMultiTenantApplicationTests {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Hello World!")));
+                .andExpect(content().string(containsString("Hello World")));
     }
 
 }
