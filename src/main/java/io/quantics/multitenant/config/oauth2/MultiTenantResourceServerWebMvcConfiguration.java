@@ -1,7 +1,7 @@
 package io.quantics.multitenant.config.oauth2;
 
-import io.quantics.multitenant.tenant.model.Tenant;
-import io.quantics.multitenant.tenant.service.TenantService;
+import io.quantics.multitenant.tenant.model.TenantDetails;
+import io.quantics.multitenant.tenant.service.TenantDetailsService;
 import io.quantics.multitenant.util.TenantContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,11 +53,8 @@ public class MultiTenantResourceServerWebMvcConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant",
             name = {"enabled", "use-token"}, havingValue = "true")
-    HandlerInterceptorAdapter multiTenantJwtInterceptor() {
+    HandlerInterceptorAdapter multiTenantJwtInterceptor(TenantDetailsService tenantService) {
         return new HandlerInterceptorAdapter() {
-
-            @Autowired
-            private TenantService tenantService;
 
             @Override
             @SuppressWarnings("rawtypes")
@@ -66,7 +63,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
                 if (authentication instanceof AbstractOAuth2TokenAuthenticationToken) {
                     AbstractOAuth2TokenAuthenticationToken token = (AbstractOAuth2TokenAuthenticationToken) authentication;
                     String issuer = (String) token.getTokenAttributes().get("iss");
-                    Tenant tenant = this.tenantService.getByIssuer(issuer)
+                    TenantDetails tenant = tenantService.getByIssuer(issuer)
                             .orElseThrow(() -> new IllegalArgumentException("Tenant not found for issuer: " + issuer));
                     log.debug("Set TenantContext: {}", tenant.getId());
                     TenantContext.setTenantId(tenant.getId());

@@ -7,22 +7,22 @@ import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
+import io.quantics.multitenant.tenant.model.TenantDetails;
+import io.quantics.multitenant.tenant.service.TenantDetailsService;
 
 import java.net.URL;
 import java.security.Key;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 public class MultiTenantJWSKeySelector implements JWTClaimsSetAwareJWSKeySelector<SecurityContext> {
 
-    private final Function<String, Optional<String>> issuerToJwkSetUrl;
+    private final TenantDetailsService tenantService;
     private final Map<String, JWSKeySelector<SecurityContext>> selectors = new ConcurrentHashMap<>();
 
-    public MultiTenantJWSKeySelector(Function<String, Optional<String>> issuerToJwkSetUrl) {
-        this.issuerToJwkSetUrl = issuerToJwkSetUrl;
+    public MultiTenantJWSKeySelector(TenantDetailsService tenantService) {
+        this.tenantService = tenantService;
     }
 
     @Override
@@ -37,7 +37,8 @@ public class MultiTenantJWSKeySelector implements JWTClaimsSetAwareJWSKeySelecto
     }
 
     private JWSKeySelector<SecurityContext> fromTenant(String issuer) {
-        return this.issuerToJwkSetUrl.apply(issuer)
+        return this.tenantService.getByIssuer(issuer)
+                .map(TenantDetails::getJwkSetUrl)
                 .map(this::fromUri)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown tenant"));
     }

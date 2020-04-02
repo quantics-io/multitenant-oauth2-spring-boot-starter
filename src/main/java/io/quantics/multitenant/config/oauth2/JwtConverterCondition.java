@@ -9,8 +9,8 @@ class JwtConverterCondition extends AllNestedConditions {
         super(ConfigurationPhase.REGISTER_BEAN);
     }
 
-    @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant", name = "enabled",
-            havingValue = "true")
+    @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant",
+            name = {"enabled", "use-token"}, havingValue = "true")
     static class OnEnabled { }
 
     @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant", name = "authorities-converter")
