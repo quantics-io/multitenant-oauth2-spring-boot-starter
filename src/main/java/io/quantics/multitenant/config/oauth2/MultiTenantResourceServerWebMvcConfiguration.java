@@ -28,12 +28,12 @@ public class MultiTenantResourceServerWebMvcConfiguration {
 
     @Bean
     @Conditional(HeaderCondition.class)
-    HandlerInterceptorAdapter multiTenantHeaderInterceptor() {
+    HandlerInterceptorAdapter multiTenantHeaderInterceptor(MultiTenantResourceServerProperties properties) {
         return new HandlerInterceptorAdapter() {
 
             @Override
             public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-                String tenantId = request.getHeader("X-TENANT-ID");
+                String tenantId = request.getHeader(properties.getHeader().getHeaderName());
                 log.debug("Set TenantContext: {}", tenantId);
                 TenantContext.setTenantId(tenantId);
                 return true;

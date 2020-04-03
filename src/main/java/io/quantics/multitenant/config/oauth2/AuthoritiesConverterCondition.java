@@ -9,7 +9,7 @@ class AuthoritiesConverterCondition extends AllNestedConditions {
         super(ConfigurationPhase.REGISTER_BEAN);
     }
 
-    @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant", name = "authorities-converter")
+    @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant.jwt", name = "authorities-converter")
     static class OnAuthoritiesConverter { }
 
 }

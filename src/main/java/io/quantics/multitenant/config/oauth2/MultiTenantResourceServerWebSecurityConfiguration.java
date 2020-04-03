@@ -34,7 +34,7 @@ public class MultiTenantResourceServerWebSecurityConfiguration {
             private JwtAuthenticationConverter jwtAuthenticationConverter() {
                 JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
                 try {
-                    Class<?> converterClass = Class.forName(properties.getAuthoritiesConverter());
+                    Class<?> converterClass = Class.forName(properties.getJwt().getAuthoritiesConverter());
                     AbstractJwtGrantedAuthoritiesConverter converter = (AbstractJwtGrantedAuthoritiesConverter)
                             converterClass.getConstructor().newInstance();
                     jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(converter);

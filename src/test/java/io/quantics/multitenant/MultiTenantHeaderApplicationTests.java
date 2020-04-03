@@ -28,10 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest({
         "spring.security.oauth2.resourceserver.multitenant.enabled=true",
         "spring.security.oauth2.resourceserver.multitenant.resolve-mode=header",
+        "spring.security.oauth2.resourceserver.multitenant.header.header-name="
+                + MultiTenantHeaderApplicationTests.HEADER_NAME,
 })
 @AutoConfigureMockMvc
 @WithMockUser(username = "test")
 class MultiTenantHeaderApplicationTests {
+
+    static final String HEADER_NAME = "TEST-TENANT-ID";
 
     @Autowired
     private HomeController controller;
@@ -59,10 +63,11 @@ class MultiTenantHeaderApplicationTests {
 
     @Test
     void shouldReturnHelloWorld() throws Exception {
-        mockMvc.perform(get("/"))
+        String tenantId = "test-tenant";
+        mockMvc.perform(get("/").header(HEADER_NAME, tenantId))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Hello World")));
+                .andExpect(content().string(containsString("Hello World from " + tenantId)));
     }
 
 }

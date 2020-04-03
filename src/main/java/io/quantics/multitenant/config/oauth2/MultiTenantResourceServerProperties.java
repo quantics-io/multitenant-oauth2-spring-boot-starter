@@ -12,16 +12,8 @@ public class MultiTenantResourceServerProperties {
 
     private boolean enabled = DEFAULT_ENABLED;
     private ResolveMode resolveMode = DEFAULT_RESOLVE_MODE;
-    private String authoritiesConverter;
-
-    @PostConstruct
-    void validate() throws ClassNotFoundException {
-        if (authoritiesConverter != null
-                && !AbstractJwtGrantedAuthoritiesConverter.class.isAssignableFrom(Class.forName(authoritiesConverter))) {
-            throw new IllegalStateException("authoritiesConverter must implement "
-                    + AbstractJwtGrantedAuthoritiesConverter.class.getName());
-        }
-    }
+    private Jwt jwt = new Jwt();
+    private Header header = new Header();
 
     public enum ResolveMode {
         JWT,
@@ -44,11 +36,58 @@ public class MultiTenantResourceServerProperties {
         this.resolveMode = resolveMode;
     }
 
-    public String getAuthoritiesConverter() {
-        return authoritiesConverter;
+    public Jwt getJwt() {
+        return jwt;
     }
 
-    public void setAuthoritiesConverter(String authoritiesConverter) {
-        this.authoritiesConverter = authoritiesConverter;
+    public void setJwt(Jwt jwt) {
+        this.jwt = jwt;
     }
+
+    public Header getHeader() {
+        return header;
+    }
+
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
+    public static class Jwt {
+
+        private String authoritiesConverter;
+
+        @PostConstruct
+        void validate() throws ClassNotFoundException {
+            if (authoritiesConverter != null
+                    && !AbstractJwtGrantedAuthoritiesConverter.class.isAssignableFrom(Class.forName(authoritiesConverter))) {
+                throw new IllegalStateException("authoritiesConverter must implement "
+                        + AbstractJwtGrantedAuthoritiesConverter.class.getName());
+            }
+        }
+
+        public String getAuthoritiesConverter() {
+            return authoritiesConverter;
+        }
+
+        public void setAuthoritiesConverter(String authoritiesConverter) {
+            this.authoritiesConverter = authoritiesConverter;
+        }
+
+    }
+
+    public static class Header {
+
+        public static final String DEFAULT_HEADER_NAME = "X-TENANT-ID";
+
+        private String headerName = DEFAULT_HEADER_NAME;
+
+        public String getHeaderName() {
+            return headerName;
+        }
+
+        public void setHeaderName(String headerName) {
+            this.headerName = headerName;
+        }
+    }
+
 }
