@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,8 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MultiTenantResourceServerWebMvcConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant",
-            name = {"enabled", "use-header"}, havingValue = "true")
+    @Conditional(HeaderCondition.class)
     HandlerInterceptorAdapter multiTenantHeaderInterceptor() {
         return new HandlerInterceptorAdapter() {
 
@@ -51,8 +50,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant",
-            name = {"enabled", "use-token"}, havingValue = "true")
+    @Conditional(JwtCondition.class)
     HandlerInterceptorAdapter multiTenantJwtInterceptor(TenantDetailsService tenantService) {
         return new HandlerInterceptorAdapter() {
 

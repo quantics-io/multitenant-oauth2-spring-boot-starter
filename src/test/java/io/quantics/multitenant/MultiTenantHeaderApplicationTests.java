@@ -4,6 +4,7 @@ import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
 import io.quantics.multitenant.tenant.controller.HomeController;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,9 +15,11 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -24,8 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest({
         "spring.security.oauth2.resourceserver.multitenant.enabled=true",
-        "spring.security.oauth2.resourceserver.multitenant.use-header=true",
-        "spring.security.oauth2.resourceserver.multitenant.use-token=false",
+        "spring.security.oauth2.resourceserver.multitenant.resolve-mode=header",
 })
 @AutoConfigureMockMvc
 @WithMockUser(username = "test")
@@ -43,12 +45,15 @@ class MultiTenantHeaderApplicationTests {
     @Test
     void contextLoads() {
         assertThat(controller).isNotNull();
-        assertThat(context.getBean(JWTClaimsSetAwareJWSKeySelector.class)).isNotNull();
-        assertThat(context.getBean(JWTProcessor.class)).isNotNull();
-        assertThat(context.getBean(OAuth2TokenValidator.class)).isNotNull();
-        assertThat(context.getBean(JwtDecoder.class)).isNotNull();
-        assertThat(context.getBean("multiTenantJwtDecoderWebSecurity", WebSecurityConfigurerAdapter.class))
-                .isNotNull();
+        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JWTClaimsSetAwareJWSKeySelector.class));
+        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JWTProcessor.class));
+        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(OAuth2TokenValidator.class));
+        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JwtDecoder.class));
+        assertThrows(NoSuchBeanDefinitionException.class,
+                () -> context.getBean("multiTenantJwtAuthenticationConverterWebSecurity", WebSecurityConfigurerAdapter.class));
+        assertThrows(NoSuchBeanDefinitionException.class,
+                () -> context.getBean("multiTenantJwtDecoderWebSecurity", WebSecurityConfigurerAdapter.class));
+        assertThat(context.getBean("multiTenantHeaderInterceptor", HandlerInterceptorAdapter.class)).isNotNull();
         assertThat(context.getBean("multiTenantWebMvcConfigurer", WebMvcConfigurer.class)).isNotNull();
     }
 

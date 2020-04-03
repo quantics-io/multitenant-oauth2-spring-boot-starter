@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 public class MultiTenantResourceServerWebSecurityConfiguration {
 
     @Bean
-    @Conditional(JwtConverterCondition.class)
+    @Conditional({JwtCondition.class, AuthoritiesConverterCondition.class})
     WebSecurityConfigurerAdapter multiTenantJwtAuthenticationConverterWebSecurity(
             MultiTenantResourceServerProperties properties) {
         return new WebSecurityConfigurerAdapter() {

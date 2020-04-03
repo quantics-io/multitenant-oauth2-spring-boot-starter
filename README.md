@@ -16,7 +16,7 @@ to the application properties.
 
 #### By Claim
 
-#### By HTTP Header
+#### By Request Header
 
 #### By Domain
 

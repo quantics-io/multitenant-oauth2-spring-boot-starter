@@ -7,26 +7,25 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties("spring.security.oauth2.resourceserver.multitenant")
 public class MultiTenantResourceServerProperties {
 
-    private boolean enabled = false;
-    private boolean useHeader = false;
-    private boolean useToken = false;
+    public static final boolean DEFAULT_ENABLED = false;
+    public static final ResolveMode DEFAULT_RESOLVE_MODE = ResolveMode.JWT;
+
+    private boolean enabled = DEFAULT_ENABLED;
+    private ResolveMode resolveMode = DEFAULT_RESOLVE_MODE;
     private String authoritiesConverter;
 
     @PostConstruct
     void validate() throws ClassNotFoundException {
-        if (enabled) {
-            if (useHeader && useToken) {
-                throw new IllegalStateException("Only one of use-header and use-token should be configured");
-            }
-            if (!useHeader && !useToken) {
-                throw new IllegalStateException("One of use-header and use-token should be configured");
-            }
-        }
         if (authoritiesConverter != null
                 && !AbstractJwtGrantedAuthoritiesConverter.class.isAssignableFrom(Class.forName(authoritiesConverter))) {
-            throw new IllegalStateException("converter must implement "
+            throw new IllegalStateException("authoritiesConverter must implement "
                     + AbstractJwtGrantedAuthoritiesConverter.class.getName());
         }
+    }
+
+    public enum ResolveMode {
+        JWT,
+        HEADER,
     }
 
     public boolean isEnabled() {
@@ -37,20 +36,12 @@ public class MultiTenantResourceServerProperties {
         this.enabled = enabled;
     }
 
-    public boolean isUseHeader() {
-        return useHeader;
+    public ResolveMode getResolveMode() {
+        return resolveMode;
     }
 
-    public void setUseHeader(boolean useHeader) {
-        this.useHeader = useHeader;
-    }
-
-    public boolean isUseToken() {
-        return useToken;
-    }
-
-    public void setUseToken(boolean useToken) {
-        this.useToken = useToken;
+    public void setResolveMode(ResolveMode resolveMode) {
+        this.resolveMode = resolveMode;
     }
 
     public String getAuthoritiesConverter() {

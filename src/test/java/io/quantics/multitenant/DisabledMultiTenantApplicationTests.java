@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -26,8 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest({
         "spring.security.oauth2.resourceserver.multitenant.enabled=false",
-        "spring.security.oauth2.resourceserver.multitenant.use-header=false",
-        "spring.security.oauth2.resourceserver.multitenant.use-token=false",
 })
 @AutoConfigureMockMvc
 @WithMockUser(username = "test")
@@ -53,6 +52,10 @@ class DisabledMultiTenantApplicationTests {
                 () -> context.getBean("multiTenantJwtAuthenticationConverterWebSecurity", WebSecurityConfigurerAdapter.class));
         assertThrows(NoSuchBeanDefinitionException.class,
                 () -> context.getBean("multiTenantJwtDecoderWebSecurity", WebSecurityConfigurerAdapter.class));
+        assertThrows(NoSuchBeanDefinitionException.class,
+                () -> context.getBean("multiTenantJwtInterceptor", HandlerInterceptorAdapter.class));
+        assertThrows(NoSuchBeanDefinitionException.class,
+                () -> context.getBean("multiTenantHeaderInterceptor", HandlerInterceptorAdapter.class));
         assertThrows(NoSuchBeanDefinitionException.class,
                 () -> context.getBean("multiTenantWebMvcConfigurer", WebMvcConfigurer.class));
     }
