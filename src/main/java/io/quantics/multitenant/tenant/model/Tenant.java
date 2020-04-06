@@ -2,7 +2,7 @@ package io.quantics.multitenant.tenant.model;
 
 import io.quantics.multitenant.config.db.CurrentTenantResolver;
 import io.quantics.multitenant.util.UrlUtils;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +11,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Data
+@Builder
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Entity
 @Table(name = "tenant", schema = CurrentTenantResolver.DEFAULT_SCHEMA)
 public class Tenant implements TenantDetails {
