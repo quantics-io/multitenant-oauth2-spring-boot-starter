@@ -1,6 +1,7 @@
-package io.quantics.multitenant.tenant.model;
+package io.quantics.multitenant.tenant;
 
 import io.quantics.multitenant.config.db.CurrentTenantResolver;
+import io.quantics.multitenant.tenantdetails.TenantDetails;
 import io.quantics.multitenant.util.UrlUtils;
 import lombok.*;
 
@@ -39,4 +40,5 @@ public class Tenant implements TenantDetails {
     public String getJwkSetUrl() {
         return UrlUtils.removeTrailingSlash(this.issuer) + "/protocol/openid-connect/certs";
     }
+
 }

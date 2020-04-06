@@ -1,6 +1,6 @@
 package io.quantics.multitenant;
 
-import io.quantics.multitenant.tenant.controller.HomeController;
+import io.quantics.multitenant.tenant.HomeController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

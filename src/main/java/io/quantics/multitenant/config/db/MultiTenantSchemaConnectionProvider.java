@@ -9,6 +9,10 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Provider that provides tenant-specific connection handling in a multi-tenant application. The tenant distinction is
+ * realized by using separate schemas, i.e. each tenant uses its own schema in a shared (common) database.
+ */
 @Component
 @Slf4j
 public class MultiTenantSchemaConnectionProvider implements MultiTenantConnectionProvider {
@@ -59,4 +63,5 @@ public class MultiTenantSchemaConnectionProvider implements MultiTenantConnectio
     public <T> T unwrap(Class<T> unwrapType) {
         return null;
     }
+
 }

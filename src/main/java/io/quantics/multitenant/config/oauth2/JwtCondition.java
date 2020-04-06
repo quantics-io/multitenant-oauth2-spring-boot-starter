@@ -4,6 +4,9 @@ import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.ConfigurationCondition;
 
+/**
+ * Condition for creating jwt-based beans.
+ */
 class JwtCondition extends AllNestedConditions {
 
     JwtCondition() {

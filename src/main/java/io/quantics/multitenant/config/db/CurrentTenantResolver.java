@@ -4,6 +4,9 @@ import io.quantics.multitenant.util.TenantContext;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.stereotype.Component;
 
+/**
+ * Resolver for translating the current tenant-id into the schema to be used for the data source.
+ */
 @Component
 public class CurrentTenantResolver implements CurrentTenantIdentifierResolver {
 
@@ -20,4 +23,5 @@ public class CurrentTenantResolver implements CurrentTenantIdentifierResolver {
     public boolean validateExistingCurrentSessions() {
         return true;
     }
+
 }

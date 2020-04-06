@@ -12,6 +12,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Configures a {@link WebSecurityConfigurerAdapter} when <i>jwt</i> is used as the mode for resolving the tenant.
+ * If an authorities converter is configured as well, then this converter is configured using a
+ * {@link JwtAuthenticationConverter}.
+ */
 @Configuration
 public class MultiTenantResourceServerWebSecurityConfiguration {
 

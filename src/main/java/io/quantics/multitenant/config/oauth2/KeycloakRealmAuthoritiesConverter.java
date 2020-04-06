@@ -9,6 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Converter for converting a Keycloak-issued {@link Jwt} into {@link GrantedAuthority GrantedAuthorities}.
+ * The converter uses the <i>roles</i> inside the <i>realm_access</i> claim for mapping to granted authorities.
+ * Each role is prefixed with <i>ROLE_</i> for ensuring compatibility with the Spring framework.
+ *
+ * @see <a href="https://www.keycloak.org">https://www.keycloak.org</a>
+ */
 public final class KeycloakRealmAuthoritiesConverter extends AbstractJwtGrantedAuthoritiesConverter {
 
     @Override
@@ -20,4 +27,5 @@ public final class KeycloakRealmAuthoritiesConverter extends AbstractJwtGrantedA
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
+
 }

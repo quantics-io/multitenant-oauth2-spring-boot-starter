@@ -17,6 +17,10 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configures an {@link LocalContainerEntityManagerFactoryBean EntityManagerFactoryBean} for a schema-based multi-tenant
+ * data source.
+ */
 @Configuration
 public class MultiTenantSchemaHibernateConfiguration {
 
@@ -51,4 +55,5 @@ public class MultiTenantSchemaHibernateConfiguration {
 
         return em;
     }
+
 }

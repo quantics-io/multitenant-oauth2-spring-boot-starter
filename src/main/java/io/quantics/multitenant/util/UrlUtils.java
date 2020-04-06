@@ -1,5 +1,8 @@
 package io.quantics.multitenant.util;
 
+/**
+ * Utility class for various url-related operations.
+ */
 public final class UrlUtils {
 
     public static String removeTrailingSlash(String url) {
@@ -10,4 +13,5 @@ public final class UrlUtils {
         }
         return sb.toString();
     }
+
 }

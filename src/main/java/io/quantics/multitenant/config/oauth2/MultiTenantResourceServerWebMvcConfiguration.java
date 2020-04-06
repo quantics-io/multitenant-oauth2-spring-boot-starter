@@ -1,7 +1,7 @@
 package io.quantics.multitenant.config.oauth2;
 
-import io.quantics.multitenant.tenant.model.TenantDetails;
-import io.quantics.multitenant.tenant.service.TenantDetailsService;
+import io.quantics.multitenant.tenantdetails.TenantDetails;
+import io.quantics.multitenant.tenantdetails.TenantDetailsService;
 import io.quantics.multitenant.util.TenantContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,16 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Configures a {@link WebMvcConfigurer} with a {@link HandlerInterceptorAdapter}. The interceptor is used for setting
+ * the current tenant in the {@link TenantContext} automatically for each request.
+ * <ul>
+ *     <li>If <i>header</i> is used as the mode for resolving the tenant, the current tenant is resolved from the
+ *         configured header name.
+ *     <li>If <i>jwt</i> is used as the mode for resolving the tenant, the current tenant is resolved from the token's
+ *         <i>iss</i> claim.
+ * </ul>
+ */
 @Configuration
 @ConditionalOnMissingBean(WebMvcConfigurer.class)
 @Slf4j

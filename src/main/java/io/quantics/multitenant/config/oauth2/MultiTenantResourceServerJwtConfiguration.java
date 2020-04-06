@@ -5,7 +5,7 @@ import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
-import io.quantics.multitenant.tenant.service.TenantDetailsService;
+import io.quantics.multitenant.tenantdetails.TenantDetailsService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -17,6 +17,11 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
+/**
+ * Configures a {@link JwtDecoder} and exposes it as a bean.
+ * The {@link JwtDecoder} uses a {@link JWTProcessor} with a {@link MultiTenantJWSKeySelector} and a
+ * {@link MultiTenantJwtIssuerValidator}.
+ */
 @Configuration
 @Conditional(JwtCondition.class)
 public class MultiTenantResourceServerJwtConfiguration {

@@ -1,8 +1,8 @@
 package io.quantics.multitenant.util;
 
-import org.springframework.stereotype.Component;
-
-@Component
+/**
+ * Provides information about the current tenant in a thread-safe way.
+ */
 public class TenantContext {
 
     private static final ThreadLocal<String> TENANT = new ThreadLocal<>();
@@ -18,4 +18,5 @@ public class TenantContext {
     public static void clear() {
         TENANT.remove();
     }
+
 }

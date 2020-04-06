@@ -1,7 +1,6 @@
-package io.quantics.multitenant.tenant.service;
+package io.quantics.multitenant.tenant;
 
-import io.quantics.multitenant.tenant.model.Tenant;
-import io.quantics.multitenant.tenant.repository.TenantRepository;
+import io.quantics.multitenant.tenantdetails.TenantDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,4 +24,5 @@ public class TenantService implements TenantDetailsService {
     public Optional<Tenant> getByIssuer(String issuer) {
         return repository.findByIssuer(issuer);
     }
+
 }

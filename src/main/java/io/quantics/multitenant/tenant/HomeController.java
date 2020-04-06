@@ -1,4 +1,4 @@
-package io.quantics.multitenant.tenant.controller;
+package io.quantics.multitenant.tenant;
 
 import io.quantics.multitenant.util.TenantContext;
 import org.springframework.security.core.Authentication;
@@ -34,4 +34,5 @@ public class HomeController {
 
         return result.toString();
     }
+
 }
