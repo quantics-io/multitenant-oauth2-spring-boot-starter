@@ -2,6 +2,10 @@
 
 Multi-tenant capabilities for spring-based OAuth2 resource servers
 
+This project contains 2 different modules:
+* [io.quantics.multitenant](src/main/java/io/quantics/multitenant): Spring configuration & auto-configuration for multi-tenant capabilities
+* [io.quantics.example.multitenancy](src/main/java/io/quantics/example/multitenancy): Example multi-tenant application utilizing the auto-configuration
+
 
 ## Enabling multi-tenant support
 
@@ -25,14 +29,14 @@ Key | Allowed values | Default value
 
 #### By Claim
 
-Setting the resolve mode to JWT will resolve the tenant by the OAuth2 "iss" claim found in the JWT.
+Setting the resolve mode to JWT will resolve the tenant by the OAuth2 *iss* claim found in the JWT.
 
 
 #### By Request Header
 
 Alternatively, the tenant can be resolved by a custom HTTP header by setting the resolve mode to Header.
 
-Note: This setting is not suggested for production-grade applications, but rather for quick validation that things are working as expected.
+*Note:* This setting is not suggested for production-grade applications, but rather for quick validation that things are working as expected.
 
 
 ### Propagating the Tenant
