@@ -1,6 +1,6 @@
-package io.quantics.multitenant.tenant;
+package io.quantics.example.multitenancy;
 
-import io.quantics.multitenant.config.db.CurrentTenantResolver;
+import io.quantics.example.multitenancy.config.db.CurrentTenantResolver;
 import io.quantics.multitenant.tenantdetails.TenantDetails;
 import io.quantics.multitenant.util.UrlUtils;
 import lombok.*;

@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.db;
+package io.quantics.example.multitenancy.config.db;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;

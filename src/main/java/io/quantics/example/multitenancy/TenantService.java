@@ -1,4 +1,4 @@
-package io.quantics.multitenant.tenant;
+package io.quantics.example.multitenancy;
 
 import io.quantics.multitenant.tenantdetails.TenantDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;

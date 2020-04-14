@@ -1,4 +1,4 @@
-package io.quantics.multitenant.tenant;
+package io.quantics.example.multitenancy;
 
 import io.quantics.multitenant.util.TenantContext;
 import org.springframework.security.core.Authentication;

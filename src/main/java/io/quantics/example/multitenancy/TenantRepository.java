@@ -1,4 +1,4 @@
-package io.quantics.multitenant.tenant;
+package io.quantics.example.multitenancy;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

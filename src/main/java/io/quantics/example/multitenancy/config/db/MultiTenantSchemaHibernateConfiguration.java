@@ -1,6 +1,6 @@
-package io.quantics.multitenant.config.db;
+package io.quantics.example.multitenancy.config.db;
 
-import io.quantics.multitenant.SpringMultiTenancyApplication;
+import io.quantics.example.multitenancy.SpringMultiTenancyApplication;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;

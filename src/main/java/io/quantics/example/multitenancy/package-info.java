@@ -1,4 +1,4 @@
 /**
  * Contains sample beans for a multi-tenant application.
  */
-package io.quantics.multitenant.tenant;
+package io.quantics.example.multitenancy;

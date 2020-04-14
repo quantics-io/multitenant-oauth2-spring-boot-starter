@@ -1,9 +1,7 @@
-package io.quantics.multitenant;
+package io.quantics.example.multitenancy;
 
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
-import io.quantics.multitenant.tenant.HomeController;
-import io.quantics.multitenant.tenant.Tenant;
 import io.quantics.multitenant.tenantdetails.TenantDetailsService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

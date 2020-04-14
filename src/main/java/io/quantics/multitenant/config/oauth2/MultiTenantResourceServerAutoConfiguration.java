@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -21,7 +22,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * {@link EnableAutoConfiguration Auto-configuration} for multi-tenant resource server support.
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore({ SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class })
+@AutoConfigureBefore({ WebMvcAutoConfiguration.class,
+        SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class })
 @EnableConfigurationProperties(MultiTenantResourceServerProperties.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class MultiTenantResourceServerAutoConfiguration {
