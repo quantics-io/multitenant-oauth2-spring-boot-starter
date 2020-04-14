@@ -3,22 +3,36 @@
 Multi-tenant capabilities for spring-based OAuth2 resource servers
 
 
-## Configuration
+## Enabling multi-tenant support
 
 The multi-tenant resource server configuration can be activated by adding the property
 `spring.security.oauth2.resourceserver.multitenant.enabled=true`
 to the application properties.
 
+## Configuration
 
-## Implementation
+All configuration properties are starting with the prefix
+`spring.security.oauth2.resourceserver.multitenant.*`
+
+Key | Allowed values | Default value
+--- | --- | --- 
+`enabled` | <ul><li>`true`</li><li>`false`</li></ul> | `false`
+`resolve-mode` | <ul><li>`jwt`</li><li>`header`</li></ul> | `jwt`
+`jwt.authorities-converter` | Any class implementing [`AbstractJwtGrantedAuthoritiesConverter`](src/main/java/io/quantics/multitenant/config/oauth2/AbstractJwtGrantedAuthoritiesConverter.java) | none
+`header.header-name` | Any string | X-TENANT-ID
 
 ### Resolving the Tenant
 
 #### By Claim
 
+Setting the resolve mode to JWT will resolve the tenant by the OAuth2 "iss" claim found in the JWT.
+
+
 #### By Request Header
 
-#### By Domain
+Alternatively, the tenant can be resolved by a custom HTTP header by setting the resolve mode to Header.
+
+Note: This setting is not suggested for production-grade applications, but rather for quick validation that things are working as expected.
 
 
 ### Propagating the Tenant
