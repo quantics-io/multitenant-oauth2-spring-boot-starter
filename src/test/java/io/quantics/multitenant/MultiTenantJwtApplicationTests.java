@@ -1,4 +1,4 @@
-package io.quantics.example.multitenancy;
+package io.quantics.multitenant;
 
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;

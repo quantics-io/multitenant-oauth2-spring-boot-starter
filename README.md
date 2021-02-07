@@ -1,6 +1,6 @@
 # Spring Boot Starter for multi-tenant OAuth2 resource servers
 
-This is a starter project for multi-tenant OAuth2 resource servers implemented with Spring Boot. 
+This is a starter project for multi-tenant OAuth2 resource servers implemented with Spring. 
 The code in this project is based on the samples from the official
 [Spring Security documentation](https://docs.spring.io/spring-security/site/docs/current/reference/html5/#oauth2resourceserver-multitenancy).
 
@@ -10,7 +10,7 @@ The code in this project is based on the samples from the official
 
 The auto-configuration for a multi-tenant OAuth2 resource server can be activated by adding the property
 `spring.security.oauth2.resourceserver.multitenant.enabled=true`
-to the application properties.
+to your application properties.
 
 ## Configuration
 
