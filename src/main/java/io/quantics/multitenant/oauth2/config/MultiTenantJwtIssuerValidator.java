@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.oauth2;
+package io.quantics.multitenant.oauth2.config;
 
 import io.quantics.multitenant.tenantdetails.TenantDetails;
 import io.quantics.multitenant.tenantdetails.TenantDetailsService;
@@ -39,7 +39,7 @@ public class MultiTenantJwtIssuerValidator implements OAuth2TokenValidator<Jwt> 
         return this.tenantService.getByIssuer(issuer)
                 .map(TenantDetails::getIssuer)
                 .map(JwtIssuerValidator::new)
-                .orElseThrow(() -> new IllegalArgumentException("unknown tenant"));
+                .orElseThrow(() -> new IllegalArgumentException("Unknown tenant"));
     }
 
 }

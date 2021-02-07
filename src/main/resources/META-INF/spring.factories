@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.quantics.multitenant.config.oauth2.MultiTenantResourceServerAutoConfiguration
+io.quantics.multitenant.oauth2.config.MultiTenantResourceServerAutoConfiguration

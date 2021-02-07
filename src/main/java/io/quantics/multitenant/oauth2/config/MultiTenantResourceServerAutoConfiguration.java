@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.oauth2;
+package io.quantics.multitenant.oauth2.config;
 
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
@@ -22,8 +22,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * {@link EnableAutoConfiguration Auto-configuration} for multi-tenant resource server support.
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore({ WebMvcAutoConfiguration.class,
-        SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class })
+@AutoConfigureBefore({ WebMvcAutoConfiguration.class, SecurityAutoConfiguration.class,
+        UserDetailsServiceAutoConfiguration.class })
 @EnableConfigurationProperties(MultiTenantResourceServerProperties.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class MultiTenantResourceServerAutoConfiguration {

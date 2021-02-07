@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.oauth2;
+package io.quantics.multitenant.oauth2.config;
 
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;

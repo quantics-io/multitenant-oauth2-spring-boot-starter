@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.oauth2;
+package io.quantics.multitenant.oauth2.config;
 
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

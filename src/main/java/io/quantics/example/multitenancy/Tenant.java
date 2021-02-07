@@ -2,7 +2,7 @@ package io.quantics.example.multitenancy;
 
 import io.quantics.example.multitenancy.config.db.CurrentTenantResolver;
 import io.quantics.multitenant.tenantdetails.TenantDetails;
-import io.quantics.multitenant.util.UrlUtils;
+import io.quantics.example.multitenancy.util.UrlUtils;
 import lombok.*;
 
 import javax.persistence.Column;

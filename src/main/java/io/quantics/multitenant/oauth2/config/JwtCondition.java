@@ -1,15 +1,16 @@
-package io.quantics.multitenant.config.oauth2;
+package io.quantics.multitenant.oauth2.config;
 
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.ConfigurationCondition;
 
 /**
- * Condition for creating header-based beans.
+ * Condition for creating jwt-based beans.
  */
-class HeaderCondition extends AllNestedConditions {
+class JwtCondition extends AllNestedConditions {
 
-    HeaderCondition() {
-        super(ConfigurationPhase.REGISTER_BEAN);
+    JwtCondition() {
+        super(ConfigurationCondition.ConfigurationPhase.REGISTER_BEAN);
     }
 
     @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant", name = "enabled",
@@ -17,7 +18,7 @@ class HeaderCondition extends AllNestedConditions {
     static class OnEnabled { }
 
     @ConditionalOnProperty(prefix = "spring.security.oauth2.resourceserver.multitenant", name = "resolve-mode",
-            havingValue = "header")
-    static class OnResolveModeHeader { }
+            havingValue = "jwt")
+    static class OnResolveModeJwt { }
 
 }

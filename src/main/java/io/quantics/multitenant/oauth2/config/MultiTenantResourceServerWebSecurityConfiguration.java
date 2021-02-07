@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.oauth2;
+package io.quantics.multitenant.oauth2.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 public class MultiTenantResourceServerWebSecurityConfiguration {
 
     @Bean
-    @Conditional({JwtCondition.class, AuthoritiesConverterCondition.class})
+    @Conditional({ JwtCondition.class, AuthoritiesConverterCondition.class })
     WebSecurityConfigurerAdapter multiTenantJwtAuthenticationConverterWebSecurity(
             MultiTenantResourceServerProperties properties) {
         return new WebSecurityConfigurerAdapter() {

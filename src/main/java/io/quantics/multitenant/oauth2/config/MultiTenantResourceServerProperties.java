@@ -1,4 +1,4 @@
-package io.quantics.multitenant.config.oauth2;
+package io.quantics.multitenant.oauth2.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -13,9 +13,24 @@ public class MultiTenantResourceServerProperties {
     public static final boolean DEFAULT_ENABLED = false;
     public static final ResolveMode DEFAULT_RESOLVE_MODE = ResolveMode.JWT;
 
+    /**
+     * Whether multi-tenant resource server configuration is active.
+     */
     private boolean enabled = DEFAULT_ENABLED;
+
+    /**
+     * How the tenant is resolved (by JWT or by header).
+     */
     private ResolveMode resolveMode = DEFAULT_RESOLVE_MODE;
+
+    /**
+     * Options for resolving the tenant by JWT.
+     */
     private Jwt jwt = new Jwt();
+
+    /**
+     * Options for resolving the tenant by header.
+     */
     private Header header = new Header();
 
     public enum ResolveMode {
@@ -57,6 +72,9 @@ public class MultiTenantResourceServerProperties {
 
     public static class Jwt {
 
+        /**
+         * Implementation of AbstractJwtGrantedAuthoritiesConverter.
+         */
         private String authoritiesConverter;
 
         @PostConstruct
@@ -82,6 +100,11 @@ public class MultiTenantResourceServerProperties {
 
         public static final String DEFAULT_HEADER_NAME = "X-TENANT-ID";
 
+        /**
+         * Name of the HTTP header which is used for resolving the tenant.
+         * Note that this is not suggested for production-grade applications.
+         * For production-grade applications, rather resolve the tenant by JWT or another method of your choice.
+         */
         private String headerName = DEFAULT_HEADER_NAME;
 
         public String getHeaderName() {

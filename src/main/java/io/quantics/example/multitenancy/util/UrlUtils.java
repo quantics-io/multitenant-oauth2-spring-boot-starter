@@ -1,4 +1,4 @@
-package io.quantics.multitenant.util;
+package io.quantics.example.multitenancy.util;
 
 /**
  * Utility class for various url-related operations.

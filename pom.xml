@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.6.RELEASE</version>
+        <version>2.2.13.RELEASE</version>
+<!--        <version>2.4.2</version>-->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>io.quantics</groupId>
-    <artifactId>spring-multi-tenant</artifactId>
+    <artifactId>multitenant-oauth2-spring-boot-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Spring Multi-Tenancy</name>
-    <description>Multi-tenant capabilities for spring-based OAuth2 resource servers</description>
+    <name>Spring Boot Starter for multi-tenant OAuth2 resource servers</name>
 
     <properties>
         <java.version>11</java.version>
@@ -89,6 +89,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-autoconfigure-processor</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

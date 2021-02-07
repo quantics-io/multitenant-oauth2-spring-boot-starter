@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.security.oauth2.resourceserver.multitenant.enabled=true",
         "spring.security.oauth2.resourceserver.multitenant.resolve-mode=jwt",
         "spring.security.oauth2.resourceserver.multitenant.jwt.authorities-converter="
-                + "io.quantics.multitenant.config.oauth2.KeycloakRealmAuthoritiesConverter",
+                + "io.quantics.multitenant.oauth2.config.KeycloakRealmAuthoritiesConverter",
 })
 @AutoConfigureMockMvc
 @WithMockUser(username = "test")
