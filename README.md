@@ -21,7 +21,7 @@ Key | Allowed values | Default value
 --- | --- | --- 
 `enabled` | <ul><li>`true`</li><li>`false`</li></ul> | `false`
 `resolve-mode` | <ul><li>`jwt`</li><li>`header`</li></ul> | `jwt`
-`jwt.authorities-converter` | Any class extending [`AbstractJwtGrantedAuthoritiesConverter`](src/main/java/io/quantics/multitenant/config/oauth2/AbstractJwtGrantedAuthoritiesConverter.java) | none
+`jwt.authorities-converter` | Any class extending [`AbstractJwtGrantedAuthoritiesConverter`](src/main/java/io/quantics/multitenant/oauth2/config/AbstractJwtGrantedAuthoritiesConverter.java) | none
 `header.header-name` | Any string | X-TENANT-ID
 
 ### Resolving the Tenant
@@ -36,4 +36,3 @@ Setting the resolve mode to *JWT* will resolve the tenant by the OAuth2 *iss* cl
 Alternatively, the tenant can be resolved by a custom HTTP header by setting the resolve mode to *Header*.
 
 *Note:* This setting is not suggested for production-grade applications, but rather for quick validation that things are working as expected.
-Spring Security docs.

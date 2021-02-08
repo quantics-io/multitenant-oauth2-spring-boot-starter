@@ -1,4 +1,4 @@
-package io.quantics.multitenant.util;
+package io.quantics.multitenant;
 
 /**
  * Provides information about the current tenant in a thread-safe way.

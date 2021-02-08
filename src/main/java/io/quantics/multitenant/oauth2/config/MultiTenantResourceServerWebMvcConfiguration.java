@@ -1,8 +1,8 @@
 package io.quantics.multitenant.oauth2.config;
 
+import io.quantics.multitenant.TenantContext;
 import io.quantics.multitenant.tenantdetails.TenantDetails;
 import io.quantics.multitenant.tenantdetails.TenantDetailsService;
-import io.quantics.multitenant.util.TenantContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
