@@ -10,7 +10,7 @@ The code in this project is based on the samples from the official
 
 Add the dependency to your pom.xml file:
 
-```
+```xml
 <dependency>
     <groupId>io.quantics</groupId>
     <artifactId>multitenant-oauth2-spring-boot-starter</artifactId>
