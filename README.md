@@ -6,6 +6,18 @@ The code in this project is based on the samples from the official
 
 [comment]: <> (TODO add some background info and use cases)
 
+## Installation
+
+Add the dependency to your pom.xml file:
+
+```
+<dependency>
+    <groupId>io.quantics</groupId>
+    <artifactId>multitenant-oauth2-spring-boot-starter</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
 ## Usage
 
 The auto-configuration for a multi-tenant OAuth2 resource server can be activated by adding the property
