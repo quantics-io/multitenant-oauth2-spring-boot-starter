@@ -1,6 +1,6 @@
 # Spring Boot Starter for multi-tenant OAuth2 resource servers
 
-This is a starter project for multi-tenant OAuth2 resource servers implemented with Spring. 
+This is a starter library for multi-tenant OAuth2 resource servers implemented with Spring & Spring Boot. 
 The code in this project is based on the samples from the official
 [Spring Security documentation](https://docs.spring.io/spring-security/site/docs/current/reference/html5/#oauth2resourceserver-multitenancy).
 
