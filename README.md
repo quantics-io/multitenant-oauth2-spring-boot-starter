@@ -1,10 +1,8 @@
-# Spring Boot Starter for multi-tenant OAuth2 resource servers
+# Spring Boot Starter library for multi-tenant OAuth2 resource servers
 
-This is a starter project for multi-tenant OAuth2 resource servers implemented with Spring. 
+This is a starter library for multi-tenant OAuth2 resource servers implemented with Spring. 
 The code in this project is based on the samples from the official
-[Spring Security documentation](https://docs.spring.io/spring-security/site/docs/current/reference/html5/#oauth2resourceserver-multitenancy).
-
-[comment]: <> (TODO add some background info and use cases)
+[Spring Security documentation](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/multitenancy.html).
 
 ## Installation
 
@@ -29,12 +27,12 @@ to your application properties.
 All configuration properties start with the prefix
 `spring.security.oauth2.resourceserver.multitenant.*`
 
-Key | Allowed values | Default value
---- | --- | --- 
-`enabled` | <ul><li>`true`</li><li>`false`</li></ul> | `false`
-`resolve-mode` | <ul><li>`jwt`</li><li>`header`</li></ul> | `jwt`
-`jwt.authorities-converter` | Any class extending [`AbstractJwtGrantedAuthoritiesConverter`](src/main/java/io/quantics/multitenant/oauth2/config/AbstractJwtGrantedAuthoritiesConverter.java) | none
-`header.header-name` | Any string | X-TENANT-ID
+| Key                         | Allowed values                                                                                                                                                  | Default value |
+|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| `enabled`                   | <ul><li>`true`</li><li>`false`</li></ul>                                                                                                                        | `false`       |       
+| `resolve-mode`              | <ul><li>`jwt`</li><li>`header`</li></ul>                                                                                                                        | `jwt`         |
+| `jwt.authorities-converter` | Any class extending [`AbstractJwtGrantedAuthoritiesConverter`](src/main/java/io/quantics/multitenant/oauth2/config/AbstractJwtGrantedAuthoritiesConverter.java) | none          |          
+| `header.header-name`        | Any string                                                                                                                                                      | X-TENANT-ID   |
 
 ### Resolving the Tenant
 
