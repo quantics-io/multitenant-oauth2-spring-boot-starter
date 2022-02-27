@@ -34,15 +34,15 @@ All configuration properties start with the prefix
 | `jwt.authorities-converter` | Any class extending [`AbstractJwtGrantedAuthoritiesConverter`](src/main/java/io/quantics/multitenant/oauth2/config/AbstractJwtGrantedAuthoritiesConverter.java) | none          |          
 | `header.header-name`        | Any string                                                                                                                                                      | X-TENANT-ID   |
 
-### Resolving the Tenant
+### Resolving the tenant
 
-#### By Claim
+#### By JWT
 
 Setting the resolve mode to *JWT* will resolve the tenant by the OAuth2 *iss* claim found in the JWT.
 
 
-#### By Request Header
+#### By request header
 
-Alternatively, the tenant can be resolved by a custom HTTP header by setting the resolve mode to *Header*.
+Alternatively, the tenant can be resolved by a custom HTTP header by setting the resolve mode to *header*.
 
-*Note:* This setting is not suggested for production-grade applications, but rather for quick validation that things are working as expected.
+*Note:* Resolving the tenant by an HTTP header is not suggested for production-grade applications, but rather for quick validation that things are working as expected.
