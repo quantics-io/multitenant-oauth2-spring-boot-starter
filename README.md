@@ -1,4 +1,4 @@
-# Spring Boot Starter library for multi-tenant OAuth2 resource servers
+# Spring Boot starter library for multi-tenant OAuth2 resource servers
 
 This is a starter library for multi-tenant OAuth2 resource servers implemented with Spring. 
 The code in this project is based on the samples from the official
