@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for multi-tenant resource server support.
@@ -41,7 +41,7 @@ public class MultiTenantResourceServerAutoConfiguration {
 
 
     @Configuration
-    @ConditionalOnClass({ HandlerInterceptorAdapter.class, WebMvcConfigurer.class })
+    @ConditionalOnClass({ HandlerInterceptor.class, WebMvcConfigurer.class })
     @Import(MultiTenantResourceServerWebMvcConfiguration.class)
     static class WebMvcConfiguration { }
 
