@@ -15,6 +15,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -24,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Configures a {@link WebMvcConfigurer} with a {@link HandlerInterceptorAdapter}. The interceptor is used for setting
+ * Configures a {@link WebMvcConfigurer} with a {@link HandlerInterceptor}. The interceptor is used for setting
  * the current tenant in the {@link TenantContext} automatically for each request.
  * <ul>
  *     <li>If <i>header</i> is used as the mode for resolving the tenant, the current tenant is resolved from the
@@ -41,8 +42,8 @@ public class MultiTenantResourceServerWebMvcConfiguration {
 
     @Bean
     @Conditional(HeaderCondition.class)
-    HandlerInterceptorAdapter multiTenantHeaderInterceptor(MultiTenantResourceServerProperties properties) {
-        return new HandlerInterceptorAdapter() {
+    HandlerInterceptor multiTenantHeaderInterceptor(MultiTenantResourceServerProperties properties) {
+        return new HandlerInterceptor() {
 
             @Override
             public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -65,8 +66,8 @@ public class MultiTenantResourceServerWebMvcConfiguration {
 
     @Bean
     @Conditional(JwtCondition.class)
-    HandlerInterceptorAdapter multiTenantJwtInterceptor(TenantDetailsService tenantService) {
-        return new HandlerInterceptorAdapter() {
+    HandlerInterceptor multiTenantJwtInterceptor(TenantDetailsService tenantService) {
+        return new HandlerInterceptor() {
 
             @Override
             @SuppressWarnings("rawtypes")
@@ -96,12 +97,12 @@ public class MultiTenantResourceServerWebMvcConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(HandlerInterceptorAdapter.class)
+    @ConditionalOnBean(HandlerInterceptor.class)
     WebMvcConfigurer multiTenantWebMvcConfigurer() {
         return new WebMvcConfigurer() {
 
             @Autowired
-            private HandlerInterceptorAdapter interceptor;
+            private HandlerInterceptor interceptor;
 
             @Override
             public void addInterceptors(@NonNull InterceptorRegistry registry) {
