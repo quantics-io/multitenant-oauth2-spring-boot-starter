@@ -1,6 +1,6 @@
 # Spring Boot starter library for multi-tenant OAuth2 resource servers
 
-This is a starter library for multi-tenant OAuth2 resource servers implemented with Spring & Spring Boot. 
+This is a starter library for multi-tenant OAuth2 resource servers implemented with Spring. 
 The code in this project is based on the samples from the official
 [Spring Security documentation](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/multitenancy.html).
 
@@ -12,7 +12,7 @@ Add the dependency to your pom.xml file:
 <dependency>
     <groupId>io.quantics</groupId>
     <artifactId>multitenant-oauth2-spring-boot-starter</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 

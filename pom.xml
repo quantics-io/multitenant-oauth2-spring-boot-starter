@@ -5,14 +5,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.13.RELEASE</version>
-        <!--        <version>2.4.2</version>-->
+        <version>2.4.5</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>io.quantics</groupId>
     <artifactId>multitenant-oauth2-spring-boot-starter</artifactId>
-    <version>0.1.0</version>
-    <name>Spring Boot Starter for multi-tenant OAuth2 resource servers</name>
+    <version>0.2.0</version>
+    <name>Spring Boot starter library for multi-tenant OAuth2 resource servers</name>
 
     <licenses>
         <license>
@@ -58,6 +57,24 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
