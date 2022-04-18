@@ -5,7 +5,7 @@ package io.quantics.multitenant;
  */
 public class TenantContext {
 
-    private static final ThreadLocal<String> TENANT = new ThreadLocal<>();
+    private static final ThreadLocal<String> TENANT = new InheritableThreadLocal<>();
 
     public static String getTenantId() {
         return TENANT.get();
