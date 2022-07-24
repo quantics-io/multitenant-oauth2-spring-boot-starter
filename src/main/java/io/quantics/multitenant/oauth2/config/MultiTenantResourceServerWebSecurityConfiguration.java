@@ -21,6 +21,18 @@ import java.lang.reflect.InvocationTargetException;
 public class MultiTenantResourceServerWebSecurityConfiguration {
 
     @Bean
+    @Conditional(HeaderCondition.class)
+    WebSecurityConfigurerAdapter multiTenantDisabledAuthWebSecurity() {
+        return new WebSecurityConfigurerAdapter() {
+
+            @Override
+            protected void configure(HttpSecurity http) throws Exception {
+                http.authorizeRequests().anyRequest().permitAll();
+            }
+        };
+    }
+
+    @Bean
     @Conditional({ JwtCondition.class, AuthoritiesConverterCondition.class })
     WebSecurityConfigurerAdapter multiTenantJwtAuthenticationConverterWebSecurity(
             MultiTenantResourceServerProperties properties) {
@@ -45,7 +57,7 @@ public class MultiTenantResourceServerWebSecurityConfiguration {
                     jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(converter);
                     return jwtAuthenticationConverter;
                 } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException
-                        | IllegalAccessException | InvocationTargetException e) {
+                         | IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException(e);
                 }
             }

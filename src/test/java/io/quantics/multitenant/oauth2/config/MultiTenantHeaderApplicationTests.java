@@ -19,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -32,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 + MultiTenantHeaderApplicationTests.HEADER_NAME,
 })
 @AutoConfigureMockMvc
-@WithMockUser(username = "test")
 class MultiTenantHeaderApplicationTests {
 
     static final String HEADER_NAME = "TEST-TENANT-ID";
@@ -65,6 +65,15 @@ class MultiTenantHeaderApplicationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Hello World from " + tenantId)));
+    }
+
+    @Test
+    void shouldReturnGeneralHelloWorld() throws Exception {
+        mockMvc.perform(get("/"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Hello World!")))
+                .andExpect(content().string(not(containsString("Hello World from"))));
     }
 
 }
