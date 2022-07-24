@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.security.oauth2.resourceserver.multitenant.enabled=false",
 })
 @AutoConfigureMockMvc
-@WithMockUser(username = "test")
 class DisabledMultiTenantApplicationTests {
 
     @Autowired
@@ -58,12 +57,10 @@ class DisabledMultiTenantApplicationTests {
     }
 
     @Test
-    void shouldReturnHelloWorld() throws Exception {
+    void shouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get("/"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Hello World!")))
-                .andExpect(content().string(not(containsString("Hello World from"))));
+                .andExpect(status().isUnauthorized());
     }
 
 }

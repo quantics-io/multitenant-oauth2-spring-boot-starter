@@ -43,7 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 + "io.quantics.multitenant.oauth2.config.KeycloakRealmAuthoritiesConverter",
 })
 @AutoConfigureMockMvc
-@WithMockUser(username = "test")
 class MultiTenantJwtApplicationTests {
 
     private static final String JWT_TEST_TENANT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vdGVzdC5kZXYvdGVzdC10ZW5hbnQiLCJzdWIiOiIxM2NlZDc2YS1kZDUxLTQ1MzktOTU1OC0zNTBhNWRjMzZhMDMiLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsicm9sZTEiLCJyb2xlMiJdfSwibmFtZSI6IlVzZXIgTmFtZSJ9.XHQ0tJwFxX_pp-gMz95VAturg-SJBREGa92OB8_zlf4";

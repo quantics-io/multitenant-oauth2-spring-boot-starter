@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = TestApplication.class)
 @WebMvcTest(TestController.class)
 @WithMockUser(username = "test")
-public class MultiTenantWebTests {
+class MultiTenantWebTests {
 
     @Autowired
     private MockMvc mockMvc;
