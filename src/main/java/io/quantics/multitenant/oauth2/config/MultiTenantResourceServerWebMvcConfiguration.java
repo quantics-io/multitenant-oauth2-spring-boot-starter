@@ -41,23 +41,34 @@ public class MultiTenantResourceServerWebMvcConfiguration {
 
     @Bean
     @Conditional(HeaderCondition.class)
-    HandlerInterceptor multiTenantHeaderInterceptor(MultiTenantResourceServerProperties properties) {
+    HandlerInterceptor multiTenantHeaderInterceptor(MultiTenantResourceServerProperties properties,
+                                                    TenantDetailsService tenantService) {
         return new HandlerInterceptor() {
 
             @Override
             public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                      @NonNull Object handler) {
                 String tenantId = request.getHeader(properties.getHeader().getHeaderName());
-                logger.debug("Set TenantContext: " + tenantId);
-                TenantContext.setTenantId(tenantId);
+                if (tenantId != null) {
+                    var tenant = tenantService.getById(tenantId);
+                    if (tenant.isPresent()) {
+                        logger.debug("Set TenantContext: " + tenant.get().getId());
+                        TenantContext.setTenantId(tenant.get().getId());
+                        return true;
+                    }
+                }
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return true;
             }
 
             @Override
             public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                    @NonNull Object handler, ModelAndView modelAndView) {
-                logger.debug("Clear TenantContext: " + TenantContext.getTenantId());
-                TenantContext.clear();
+                if (TenantContext.getTenantId() != null) {
+                    logger.debug("Clear TenantContext: " + TenantContext.getTenantId());
+                    TenantContext.clear();
+                }
             }
 
         };
