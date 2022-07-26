@@ -14,22 +14,15 @@ public class TestController {
 
     @GetMapping
     public String get() {
-        StringBuilder result = new StringBuilder();
-        if (TenantContext.getTenantId() == null) {
-            result.append("Hello World!");
-        } else {
-            result.append("Hello World from ")
-                .append(TenantContext.getTenantId())
-                .append("!");
-        }
+        String tenantId = TenantContext.getTenantId();
+        StringBuilder result = new StringBuilder("Hello World from " + tenantId + "!");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().size() > 0) {
-            result.append("\n\n")
-                .append("Granted authorities:").append("\n");
+            result.append("\n\n").append("Granted authorities:").append("\n");
             authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .forEach(a -> result.append("- ").append(a).append("\n"));
+                    .map(GrantedAuthority::getAuthority)
+                    .forEach(a -> result.append("- ").append(a).append("\n"));
         }
 
         return result.toString();
