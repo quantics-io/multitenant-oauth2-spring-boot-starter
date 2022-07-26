@@ -60,7 +60,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
                 }
 
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                return true;
+                return false;
             }
 
             @Override
