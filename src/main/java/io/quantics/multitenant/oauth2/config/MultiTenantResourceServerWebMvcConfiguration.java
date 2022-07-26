@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Configures a {@link WebMvcConfigurer} with a {@link HandlerInterceptor}. The interceptor is used for setting
@@ -47,7 +48,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
 
             @Override
             public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-                                     @NonNull Object handler) {
+                                     @NonNull Object handler) throws IOException {
                 String tenantId = request.getHeader(properties.getHeader().getHeaderName());
                 if (tenantId != null) {
                     var tenant = tenantService.getById(tenantId);
@@ -58,7 +59,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
                     }
                 }
 
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 return true;
             }
 
