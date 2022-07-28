@@ -12,9 +12,9 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguratio
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -35,7 +35,7 @@ public class MultiTenantResourceServerAutoConfiguration {
     static class JwtConfiguration { }
 
     @Configuration
-    @ConditionalOnClass(WebSecurityConfigurerAdapter.class)
+    @ConditionalOnClass(SecurityFilterChain.class)
     @Import(MultiTenantResourceServerWebSecurityConfiguration.class)
     static class WebSecurityConfiguration { }
 

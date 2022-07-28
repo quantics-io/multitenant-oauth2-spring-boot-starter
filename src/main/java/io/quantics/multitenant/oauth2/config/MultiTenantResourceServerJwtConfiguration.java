@@ -52,8 +52,9 @@ public class MultiTenantResourceServerJwtConfiguration {
     JwtDecoder multiTenantJwtDecoder(JWTProcessor<SecurityContext> multiTenantJwtProcessor,
                                      OAuth2TokenValidator<Jwt> multiTenantJwtIssuerValidator) {
         NimbusJwtDecoder decoder = new NimbusJwtDecoder(multiTenantJwtProcessor);
-        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
-                multiTenantJwtIssuerValidator));
+        OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>
+                (JwtValidators.createDefault(), multiTenantJwtIssuerValidator);
+        decoder.setJwtValidator(validator);
         return decoder;
     }
 
