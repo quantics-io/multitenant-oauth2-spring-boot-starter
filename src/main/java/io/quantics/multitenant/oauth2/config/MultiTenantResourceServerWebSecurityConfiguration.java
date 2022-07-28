@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * Configures a {@link SecurityFilterChain} when <i>jwt</i> is used as the mode for resolving the tenant.
  * If a JWT converter is configured as well, then this converter is configured using a
  * {@link JwtAuthenticationConverter}.
+ * If <i>header</i> is used as resolve mode, then all requests are permitted.
  */
 @Configuration
 public class MultiTenantResourceServerWebSecurityConfiguration {

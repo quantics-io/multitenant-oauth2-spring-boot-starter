@@ -4,16 +4,19 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * A {@link JwtAuthenticationConverter} that can be configured via passing a class name. The class of the converter
+ * must extend {@link AbstractJwtGrantedAuthoritiesConverter}.
+ */
 public final class MultiTenantJwtAuthenticationConverter extends JwtAuthenticationConverter {
 
     public MultiTenantJwtAuthenticationConverter(String className) {
         try {
             Class<?> converterClass = Class.forName(className);
-            AbstractJwtGrantedAuthoritiesConverter converter = (AbstractJwtGrantedAuthoritiesConverter)
-                    converterClass.getConstructor().newInstance();
+            var converter = (AbstractJwtGrantedAuthoritiesConverter) converterClass.getConstructor().newInstance();
             setJwtGrantedAuthoritiesConverter(converter);
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException
-                 | IllegalAccessException | InvocationTargetException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
