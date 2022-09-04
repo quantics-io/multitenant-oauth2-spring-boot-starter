@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -39,8 +40,9 @@ class MultiTenantJwtAuthenticationConverterApplicationTests {
         assertThat(context.getBean(JWTProcessor.class)).isNotNull();
         assertThat(context.getBean(OAuth2TokenValidator.class)).isNotNull();
         assertThat(context.getBean(JwtDecoder.class)).isNotNull();
-        assertThat(context.getBean("multiTenantJwtAuthoritiesConverterFilterChain",
-                SecurityFilterChain.class)).isNotNull();
+        assertThat(context.getBean("multiTenantJwtFilterChain", SecurityFilterChain.class)).isNotNull();
+        assertThat(context.getBean("multiTenantJwtAuthoritiesConverterResolver",
+                AuthenticationManagerResolver.class)).isNotNull();
         assertThat(context.getBean("multiTenantJwtInterceptor", HandlerInterceptor.class)).isNotNull();
         assertThat(context.getBean("multiTenantWebMvcConfigurer", WebMvcConfigurer.class)).isNotNull();
     }

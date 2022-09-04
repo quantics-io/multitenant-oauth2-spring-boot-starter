@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguratio
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,15 +23,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * {@link EnableAutoConfiguration Auto-configuration} for multi-tenant resource server support.
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore({ WebMvcAutoConfiguration.class, SecurityAutoConfiguration.class,
-        UserDetailsServiceAutoConfiguration.class })
+@AutoConfigureBefore({
+        WebMvcAutoConfiguration.class,
+        SecurityAutoConfiguration.class,
+        UserDetailsServiceAutoConfiguration.class
+})
 @EnableConfigurationProperties(MultiTenantResourceServerProperties.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class MultiTenantResourceServerAutoConfiguration {
 
     @Configuration
-    @ConditionalOnClass({ JWTClaimsSetAwareJWSKeySelector.class, JWTProcessor.class, OAuth2TokenValidator.class,
-            JwtDecoder.class })
+    @ConditionalOnClass({
+            JWTClaimsSetAwareJWSKeySelector.class,
+            JWTProcessor.class,
+            OAuth2TokenValidator.class,
+            JwtDecoder.class,
+            AuthenticationManagerResolver.class
+    })
     @Import(MultiTenantResourceServerJwtConfiguration.class)
     static class JwtConfiguration { }
 

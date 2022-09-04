@@ -6,16 +6,20 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
 import io.quantics.multitenant.tenantdetails.TenantDetailsService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Configures a {@link JwtDecoder} and exposes it as a bean.
@@ -56,6 +60,27 @@ public class MultiTenantResourceServerJwtConfiguration {
                 (JwtValidators.createDefault(), multiTenantJwtIssuerValidator);
         decoder.setJwtValidator(validator);
         return decoder;
+    }
+
+    @Bean
+    @Conditional(NoAuthoritiesConverterCondition.class)
+    @ConditionalOnBean(JwtDecoder.class)
+    public AuthenticationManagerResolver<HttpServletRequest> multiTenantJwtResolver(
+            TenantDetailsService tenantService, JwtDecoder multiTenantJwtDecoder) {
+
+        return new MultiTenantAuthenticationManagerResolver(tenantService, multiTenantJwtDecoder);
+    }
+
+    @Bean
+    @Conditional(AuthoritiesConverterCondition.class)
+    @ConditionalOnBean(JwtDecoder.class)
+    public AuthenticationManagerResolver<HttpServletRequest> multiTenantJwtAuthoritiesConverterResolver(
+            TenantDetailsService tenantService, JwtDecoder multiTenantJwtDecoder,
+            MultiTenantResourceServerProperties properties) {
+
+        return new MultiTenantAuthenticationManagerResolver(tenantService, multiTenantJwtDecoder,
+                new MultiTenantJwtAuthenticationConverter(properties.getJwt().getAuthoritiesConverter())
+        );
     }
 
 }
