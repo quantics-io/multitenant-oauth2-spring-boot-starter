@@ -1,84 +1,50 @@
 package io.quantics.multitenant.oauth2.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.web.SecurityFilterChain;
 
-import java.lang.reflect.InvocationTargetException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * Configures a {@link WebSecurityConfigurerAdapter} when <i>jwt</i> is used as the mode for resolving the tenant.
- * If an authorities converter is configured as well, then this converter is configured using a
- * {@link JwtAuthenticationConverter}.
+ * Configures a {@link SecurityFilterChain} when <i>jwt</i> is used as the mode for resolving the tenant.
+ * An {@link AuthenticationManagerResolver} takes care of performing the authentication using multiple
+ * authentication managers.
+ * If <i>header</i> is used as resolve mode, then all requests are permitted.
  */
 @Configuration
 public class MultiTenantResourceServerWebSecurityConfiguration {
 
     @Bean
     @Conditional(HeaderCondition.class)
-    WebSecurityConfigurerAdapter multiTenantDisabledAuthWebSecurity() {
-        return new WebSecurityConfigurerAdapter() {
+    public SecurityFilterChain multiTenantHeaderFilterChain(HttpSecurity http) throws Exception {
 
-            @Override
-            protected void configure(HttpSecurity http) throws Exception {
-                http.authorizeRequests().anyRequest().permitAll();
-            }
-        };
+        http.authorizeHttpRequests(authz -> authz
+                .anyRequest().permitAll()
+        );
+
+        return http.build();
     }
 
     @Bean
-    @Conditional({ JwtCondition.class, AuthoritiesConverterCondition.class })
-    WebSecurityConfigurerAdapter multiTenantJwtAuthenticationConverterWebSecurity(
-            MultiTenantResourceServerProperties properties) {
-        return new WebSecurityConfigurerAdapter() {
+    @Conditional(JwtCondition.class)
+    @ConditionalOnClass(AuthenticationManagerResolver.class)
+    public SecurityFilterChain multiTenantJwtFilterChain(
+            HttpSecurity http, AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver)
+            throws Exception {
 
-            @Override
-            protected void configure(HttpSecurity http) throws Exception {
-                http.authorizeRequests(authorize -> authorize
-                        .anyRequest().authenticated());
-                http.oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                        ));
-            }
+        http.authorizeHttpRequests(authz -> authz
+                .anyRequest().authenticated()
+        );
+        http.oauth2ResourceServer(oauth2 -> oauth2
+                .authenticationManagerResolver(authenticationManagerResolver)
+        );
 
-            private JwtAuthenticationConverter jwtAuthenticationConverter() {
-                JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-                try {
-                    Class<?> converterClass = Class.forName(properties.getJwt().getAuthoritiesConverter());
-                    AbstractJwtGrantedAuthoritiesConverter converter = (AbstractJwtGrantedAuthoritiesConverter)
-                            converterClass.getConstructor().newInstance();
-                    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(converter);
-                    return jwtAuthenticationConverter;
-                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException
-                         | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
-    @ConditionalOnBean(JwtDecoder.class)
-    WebSecurityConfigurerAdapter multiTenantJwtDecoderWebSecurity(JwtDecoder multiTenantJwtDecoder) {
-        return new WebSecurityConfigurerAdapter() {
-
-            @Override
-            protected void configure(HttpSecurity http) throws Exception {
-                http.authorizeRequests(authorize -> authorize
-                        .anyRequest().authenticated());
-                http.oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .decoder(multiTenantJwtDecoder)));
-            }
-        };
+        return http.build();
     }
 
 }

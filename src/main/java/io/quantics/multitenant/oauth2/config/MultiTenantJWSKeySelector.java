@@ -35,7 +35,7 @@ public class MultiTenantJWSKeySelector implements JWTClaimsSetAwareJWSKeySelecto
     @Override
     public List<? extends Key> selectKeys(JWSHeader jwsHeader, JWTClaimsSet jwtClaimsSet,
                                           SecurityContext securityContext) throws KeySourceException {
-        return this.selectors.computeIfAbsent(toTenant(jwtClaimsSet), this::fromTenant)
+        return selectors.computeIfAbsent(toTenant(jwtClaimsSet), this::fromTenant)
                 .selectJWSKeys(jwsHeader, securityContext);
     }
 
@@ -44,7 +44,7 @@ public class MultiTenantJWSKeySelector implements JWTClaimsSetAwareJWSKeySelecto
     }
 
     private JWSKeySelector<SecurityContext> fromTenant(String issuer) {
-        return this.tenantService.getByIssuer(issuer)
+        return tenantService.getByIssuer(issuer)
                 .map(TenantDetails::getJwkSetUrl)
                 .map(this::fromUri)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown tenant"));

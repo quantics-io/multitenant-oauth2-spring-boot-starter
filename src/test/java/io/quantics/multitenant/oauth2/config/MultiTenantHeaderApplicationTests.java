@@ -14,9 +14,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -57,11 +58,9 @@ class MultiTenantHeaderApplicationTests {
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JWTProcessor.class));
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(OAuth2TokenValidator.class));
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(JwtDecoder.class));
+        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(AuthenticationManagerResolver.class));
         assertThrows(NoSuchBeanDefinitionException.class,
-                () -> context.getBean("multiTenantJwtAuthenticationConverterWebSecurity",
-                        WebSecurityConfigurerAdapter.class));
-        assertThrows(NoSuchBeanDefinitionException.class,
-                () -> context.getBean("multiTenantJwtDecoderWebSecurity", WebSecurityConfigurerAdapter.class));
+                () -> context.getBean("multiTenantJwtFilterChain", SecurityFilterChain.class));
         assertThat(context.getBean("multiTenantHeaderInterceptor", HandlerInterceptor.class)).isNotNull();
         assertThat(context.getBean("multiTenantWebMvcConfigurer", WebMvcConfigurer.class)).isNotNull();
     }

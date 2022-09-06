@@ -27,7 +27,7 @@ public class MultiTenantJwtIssuerValidator implements OAuth2TokenValidator<Jwt> 
 
     @Override
     public OAuth2TokenValidatorResult validate(Jwt token) {
-        return this.validators.computeIfAbsent(toTenant(token), this::fromTenant)
+        return validators.computeIfAbsent(toTenant(token), this::fromTenant)
                 .validate(token);
     }
 
@@ -36,7 +36,7 @@ public class MultiTenantJwtIssuerValidator implements OAuth2TokenValidator<Jwt> 
     }
 
     private JwtIssuerValidator fromTenant(String issuer) {
-        return this.tenantService.getByIssuer(issuer)
+        return tenantService.getByIssuer(issuer)
                 .map(TenantDetails::getIssuer)
                 .map(JwtIssuerValidator::new)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown tenant"));

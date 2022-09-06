@@ -14,12 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -38,9 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = TestApplication.class, properties = {
         "spring.security.oauth2.resourceserver.multitenant.enabled=true",
-        "spring.security.oauth2.resourceserver.multitenant.resolve-mode=jwt",
-        "spring.security.oauth2.resourceserver.multitenant.jwt.authorities-converter="
-                + "io.quantics.multitenant.oauth2.config.KeycloakRealmAuthoritiesConverter",
+        "spring.security.oauth2.resourceserver.multitenant.resolve-mode=jwt"
 })
 @AutoConfigureMockMvc
 class MultiTenantJwtApplicationTests {
@@ -66,8 +64,8 @@ class MultiTenantJwtApplicationTests {
         assertThat(context.getBean(JWTProcessor.class)).isNotNull();
         assertThat(context.getBean(OAuth2TokenValidator.class)).isNotNull();
         assertThat(context.getBean(JwtDecoder.class)).isNotNull();
-        assertThat(context.getBean("multiTenantJwtAuthenticationConverterWebSecurity",
-                WebSecurityConfigurerAdapter.class)).isNotNull();
+        assertThat(context.getBean("multiTenantJwtFilterChain", SecurityFilterChain.class)).isNotNull();
+        assertThat(context.getBean("multiTenantJwtResolver", AuthenticationManagerResolver.class)).isNotNull();
         assertThat(context.getBean("multiTenantJwtInterceptor", HandlerInterceptor.class)).isNotNull();
         assertThat(context.getBean("multiTenantWebMvcConfigurer", WebMvcConfigurer.class)).isNotNull();
     }
