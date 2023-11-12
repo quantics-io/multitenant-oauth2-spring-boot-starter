@@ -3,6 +3,7 @@ package io.quantics.multitenant.oauth2.config;
 import com.nimbusds.jwt.JWTParser;
 import io.quantics.multitenant.tenantdetails.TenantDetails;
 import io.quantics.multitenant.tenantdetails.TenantDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -12,7 +13,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
