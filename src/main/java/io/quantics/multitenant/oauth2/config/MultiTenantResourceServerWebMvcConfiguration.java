@@ -6,6 +6,7 @@ import io.quantics.multitenant.tenantdetails.TenantDetailsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +41,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
 
     private static final Log logger = LogFactory.getLog(WebMvcConfigurer.class);
 
-    @Bean
+    @Bean({ "multiTenantHeaderInterceptor", "multiTenantInterceptor" })
     @Conditional(HeaderCondition.class)
     HandlerInterceptor multiTenantHeaderInterceptor(MultiTenantResourceServerProperties properties,
                                                     TenantDetailsService tenantService) {
@@ -75,7 +76,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
         };
     }
 
-    @Bean
+    @Bean({ "multiTenantJwtInterceptor", "multiTenantInterceptor" })
     @Conditional(JwtCondition.class)
     HandlerInterceptor multiTenantJwtInterceptor(TenantDetailsService tenantService) {
         return new HandlerInterceptor() {
@@ -108,16 +109,16 @@ public class MultiTenantResourceServerWebMvcConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(HandlerInterceptor.class)
+    @ConditionalOnBean(value = HandlerInterceptor.class, name = "multiTenantInterceptor")
     WebMvcConfigurer multiTenantWebMvcConfigurer() {
         return new WebMvcConfigurer() {
 
             @Autowired
-            private HandlerInterceptor interceptor;
+            private HandlerInterceptor multiTenantInterceptor;
 
             @Override
             public void addInterceptors(@NonNull InterceptorRegistry registry) {
-                registry.addInterceptor(interceptor);
+                registry.addInterceptor(multiTenantInterceptor);
             }
         };
     }
