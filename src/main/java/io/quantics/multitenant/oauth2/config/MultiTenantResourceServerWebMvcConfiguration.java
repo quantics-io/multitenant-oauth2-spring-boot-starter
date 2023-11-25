@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +34,6 @@ import java.io.IOException;
  * </ul>
  */
 @Configuration
-@ConditionalOnMissingBean(WebMvcConfigurer.class)
 public class MultiTenantResourceServerWebMvcConfiguration {
 
     private static final Log logger = LogFactory.getLog(WebMvcConfigurer.class);
@@ -81,12 +79,10 @@ public class MultiTenantResourceServerWebMvcConfiguration {
         return new HandlerInterceptor() {
 
             @Override
-            @SuppressWarnings("rawtypes")
             public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                      @NonNull Object handler) {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (authentication instanceof AbstractOAuth2TokenAuthenticationToken) {
-                    AbstractOAuth2TokenAuthenticationToken token = (AbstractOAuth2TokenAuthenticationToken) authentication;
+                if (authentication instanceof AbstractOAuth2TokenAuthenticationToken<?> token) {
                     String issuer = (String) token.getTokenAttributes().get("iss");
                     TenantDetails tenant = tenantService.getByIssuer(issuer)
                             .orElseThrow(() -> new IllegalArgumentException("Tenant not found for issuer: " + issuer));
