@@ -83,6 +83,18 @@ class MultiTenantHeaderApplicationTests {
 
     @Test
     void getWithUnknownTenant_shouldReturnUnauthorized() throws Exception {
+        String tenantId = "test-tenant";
+
+        Mockito.doReturn(Optional.empty())
+                .when(tenantService).getById(tenantId);
+
+        mockMvc.perform(get("/").header(HEADER_NAME, tenantId))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getWithoutTenant_shouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
