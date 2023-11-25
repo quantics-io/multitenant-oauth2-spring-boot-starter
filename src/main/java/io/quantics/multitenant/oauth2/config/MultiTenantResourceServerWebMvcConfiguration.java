@@ -51,8 +51,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
                 if (tenantId != null) {
                     var tenant = tenantService.getById(tenantId);
                     if (tenant.isPresent()) {
-                        logger.debug("Set TenantContext: " + tenant.get().getId());
-                        TenantContext.setTenantId(tenant.get().getId());
+                        setTenantContext(tenant.get());
                         return true;
                     }
                 }
@@ -64,10 +63,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
             @Override
             public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                    @NonNull Object handler, ModelAndView modelAndView) {
-                if (TenantContext.getTenantId() != null) {
-                    logger.debug("Clear TenantContext: " + TenantContext.getTenantId());
-                    TenantContext.clear();
-                }
+                clearTenantContext();
             }
 
         };
@@ -84,10 +80,9 @@ public class MultiTenantResourceServerWebMvcConfiguration {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 if (authentication instanceof AbstractOAuth2TokenAuthenticationToken<?> token) {
                     String issuer = (String) token.getTokenAttributes().get("iss");
-                    TenantDetails tenant = tenantService.getByIssuer(issuer)
+                    var tenant = tenantService.getByIssuer(issuer)
                             .orElseThrow(() -> new IllegalArgumentException("Tenant not found for issuer: " + issuer));
-                    logger.debug("Set TenantContext: " + tenant.getId());
-                    TenantContext.setTenantId(tenant.getId());
+                    setTenantContext(tenant);
                 }
                 return true;
             }
@@ -95,12 +90,21 @@ public class MultiTenantResourceServerWebMvcConfiguration {
             @Override
             public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                    @NonNull Object handler, ModelAndView modelAndView) {
-                if (TenantContext.getTenantId() != null) {
-                    logger.debug("Clear TenantContext: " + TenantContext.getTenantId());
-                    TenantContext.clear();
-                }
+                clearTenantContext();
             }
         };
+    }
+
+    private static void setTenantContext(TenantDetails tenant) {
+        logger.debug("Set TenantContext: " + tenant.getId());
+        TenantContext.setTenantId(tenant.getId());
+    }
+
+    private static void clearTenantContext() {
+        if (TenantContext.getTenantId() != null) {
+            logger.debug("Clear TenantContext: " + TenantContext.getTenantId());
+            TenantContext.clear();
+        }
     }
 
     @Bean

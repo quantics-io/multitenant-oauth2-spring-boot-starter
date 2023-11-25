@@ -23,7 +23,7 @@ public class MultiTenantResourceServerWebSecurityConfiguration {
     public SecurityFilterChain multiTenantHeaderFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authz -> authz
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
         );
 
         return http.build();
