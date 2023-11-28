@@ -2,8 +2,8 @@ package io.quantics.multitenant.oauth2.config;
 
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -20,7 +20,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * {@link EnableAutoConfiguration Auto-configuration} for multi-tenant resource server support.
+ * {@link AutoConfiguration Auto-configuration} for multi-tenant resource server support.
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore({
@@ -41,17 +41,20 @@ public class MultiTenantResourceServerAutoConfiguration {
             AuthenticationManagerResolver.class
     })
     @Import(MultiTenantResourceServerJwtConfiguration.class)
-    static class JwtConfiguration { }
+    static class JwtConfiguration {
+    }
 
     @Configuration
     @ConditionalOnClass(SecurityFilterChain.class)
     @Import(MultiTenantResourceServerWebSecurityConfiguration.class)
-    static class WebSecurityConfiguration { }
+    static class WebSecurityConfiguration {
+    }
 
 
     @Configuration
     @ConditionalOnClass({ HandlerInterceptor.class, WebMvcConfigurer.class })
     @Import(MultiTenantResourceServerWebMvcConfiguration.class)
-    static class WebMvcConfiguration { }
+    static class WebMvcConfiguration {
+    }
 
 }

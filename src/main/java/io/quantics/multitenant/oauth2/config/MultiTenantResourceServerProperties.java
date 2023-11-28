@@ -1,8 +1,7 @@
 package io.quantics.multitenant.oauth2.config;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Multi-tenant resource server properties.

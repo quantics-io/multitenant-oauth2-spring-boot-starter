@@ -3,13 +3,12 @@ package io.quantics.multitenant.oauth2.config;
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
 import com.nimbusds.jwt.proc.JWTProcessor;
 import io.quantics.multitenant.app.TestApplication;
-import io.quantics.multitenant.tenantdetails.TenantDetailsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -25,14 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
         "spring.security.oauth2.resourceserver.multitenant.jwt.authorities-converter="
                 + "io.quantics.multitenant.oauth2.config.KeycloakRealmAuthoritiesConverter",
 })
+@Import(MultiTenantJwtTestConfiguration.class)
 @AutoConfigureMockMvc
 class MultiTenantJwtAuthenticationConverterApplicationTests {
 
     @Autowired
     private ApplicationContext context;
-
-    @MockBean
-    private TenantDetailsService tenantService;
 
     @Test
     void contextLoads() {

@@ -3,10 +3,11 @@ package io.quantics.multitenant.oauth2.config;
 import io.quantics.multitenant.TenantContext;
 import io.quantics.multitenant.tenantdetails.TenantDetails;
 import io.quantics.multitenant.tenantdetails.TenantDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -36,7 +35,6 @@ import java.io.IOException;
  * </ul>
  */
 @Configuration
-@ConditionalOnMissingBean(WebMvcConfigurer.class)
 public class MultiTenantResourceServerWebMvcConfiguration {
 
     private static final Log logger = LogFactory.getLog(WebMvcConfigurer.class);
@@ -54,8 +52,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
                 if (tenantId != null) {
                     var tenant = tenantService.getById(tenantId);
                     if (tenant.isPresent()) {
-                        logger.debug("Set TenantContext: " + tenant.get().getId());
-                        TenantContext.setTenantId(tenant.get().getId());
+                        setTenantContext(tenant.get());
                         return true;
                     }
                 }
@@ -67,10 +64,7 @@ public class MultiTenantResourceServerWebMvcConfiguration {
             @Override
             public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                    @NonNull Object handler, ModelAndView modelAndView) {
-                if (TenantContext.getTenantId() != null) {
-                    logger.debug("Clear TenantContext: " + TenantContext.getTenantId());
-                    TenantContext.clear();
-                }
+                clearTenantContext();
             }
 
         };
@@ -82,17 +76,14 @@ public class MultiTenantResourceServerWebMvcConfiguration {
         return new HandlerInterceptor() {
 
             @Override
-            @SuppressWarnings("rawtypes")
             public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                      @NonNull Object handler) {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (authentication instanceof AbstractOAuth2TokenAuthenticationToken) {
-                    AbstractOAuth2TokenAuthenticationToken token = (AbstractOAuth2TokenAuthenticationToken) authentication;
+                if (authentication instanceof AbstractOAuth2TokenAuthenticationToken<?> token) {
                     String issuer = (String) token.getTokenAttributes().get("iss");
-                    TenantDetails tenant = tenantService.getByIssuer(issuer)
+                    var tenant = tenantService.getByIssuer(issuer)
                             .orElseThrow(() -> new IllegalArgumentException("Tenant not found for issuer: " + issuer));
-                    logger.debug("Set TenantContext: " + tenant.getId());
-                    TenantContext.setTenantId(tenant.getId());
+                    setTenantContext(tenant);
                 }
                 return true;
             }
@@ -100,16 +91,26 @@ public class MultiTenantResourceServerWebMvcConfiguration {
             @Override
             public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                    @NonNull Object handler, ModelAndView modelAndView) {
-                if (TenantContext.getTenantId() != null) {
-                    logger.debug("Clear TenantContext: " + TenantContext.getTenantId());
-                    TenantContext.clear();
-                }
+                clearTenantContext();
             }
         };
     }
 
+    private static void setTenantContext(TenantDetails tenant) {
+        logger.debug("Set TenantContext: " + tenant.getId());
+        TenantContext.setTenantId(tenant.getId());
+    }
+
+    private static void clearTenantContext() {
+        if (TenantContext.getTenantId() != null) {
+            logger.debug("Clear TenantContext: " + TenantContext.getTenantId());
+            TenantContext.clear();
+        }
+    }
+
     @Bean
     @ConditionalOnBean(value = HandlerInterceptor.class, name = "multiTenantInterceptor")
+    @ConditionalOnMissingBean(WebMvcConfigurer.class)
     WebMvcConfigurer multiTenantWebMvcConfigurer() {
         return new WebMvcConfigurer() {
 

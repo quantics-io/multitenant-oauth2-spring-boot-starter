@@ -1,5 +1,6 @@
 package io.quantics.multitenant.oauth2.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -7,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Configures a {@link SecurityFilterChain} when <i>jwt</i> is used as the mode for resolving the tenant.
@@ -24,7 +23,7 @@ public class MultiTenantResourceServerWebSecurityConfiguration {
     public SecurityFilterChain multiTenantHeaderFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authz -> authz
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
         );
 
         return http.build();

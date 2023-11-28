@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.security.oauth2.resourceserver.multitenant.header.header-name="
                 + MultiTenantHeaderApplicationTests.HEADER_NAME,
 })
+@Import(MultiTenantHeaderTestConfiguration.class)
 @AutoConfigureMockMvc
 class MultiTenantHeaderApplicationTests {
 
@@ -81,6 +83,18 @@ class MultiTenantHeaderApplicationTests {
 
     @Test
     void getWithUnknownTenant_shouldReturnUnauthorized() throws Exception {
+        String tenantId = "test-tenant";
+
+        Mockito.doReturn(Optional.empty())
+                .when(tenantService).getById(tenantId);
+
+        mockMvc.perform(get("/").header(HEADER_NAME, tenantId))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getWithoutTenant_shouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
