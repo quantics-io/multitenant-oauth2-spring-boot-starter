@@ -20,8 +20,8 @@ jobs:
           run: |
             pwd
             java -version
-            ./mvnw --version
-            ./mvnw -B package --file pom.xml
+            mvn --version
+            mvn -B package --file pom.xml
       -   name: Upload JAR
           uses: actions/upload-artifact@v4
           continue-on-error: true
