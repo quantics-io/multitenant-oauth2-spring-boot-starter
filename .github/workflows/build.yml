@@ -27,4 +27,4 @@ jobs:
           continue-on-error: true
           with:
             name: multitenant-spring-boot-build
-            path: /home/runner/work/multitenant-oauth2-spring-boot-starter/multitenant-oauth2-spring-boot-starter/target/*.jar
+            path: ${{ github.workspace }}/target/*.jar
