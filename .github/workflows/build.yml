@@ -1,0 +1,30 @@
+name: Java CI with Maven
+
+on:
+  push:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      -   uses: actions/checkout@v4
+      -   name: Set up JDK 17
+          uses: actions/setup-java@v4
+          with:
+            java-version: '17'
+            distribution: 'corretto'
+      -   name: Build with Maven
+          run: |
+            pwd
+            java -version
+            mvn --version
+            mvn -B package --file pom.xml
+      -   name: Upload JAR
+          uses: actions/upload-artifact@v4
+          continue-on-error: true
+          with:
+            name: multitenant-spring-boot-build
+            path: ${{ github.workspace }}/target/*.jar
